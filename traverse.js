@@ -1,8 +1,10 @@
+'use strict'
+
 const fs = require('fs')
 const path = require('path')
-const map = require('./mapAsync')
 const os = require('os')
 const HOME_PATH = os.homedir()
+const folder = HOME_PATH
 const exclude = [
   path.join(HOME_PATH, 'Library'),
 ]
@@ -20,15 +22,14 @@ const deepFind = (searchPath, options, eachFn) => {
         if (!isHidden && !isExcluded) {
           length++
           fs.stat(filePath, (err, stats) => {
-            if (err) {
-              return ++processed
-            }
-            eachFn(filePath, stats)
-            const isDirectory = stats.isDirectory()
-            const isSymbolicLink = stats.isSymbolicLink()
-            const isMacApp = !!fileName.match(/\.app$/)
-            if (isDirectory && !isSymbolicLink && !isMacApp) {
-              queue.push(deepFind(filePath, options, eachFn))
+            if (!err) {
+              eachFn(filePath, stats)
+              const isDirectory = stats.isDirectory()
+              const isSymbolicLink = stats.isSymbolicLink()
+              const isMacApp = !!fileName.match(/\.app$/)
+              if (isDirectory && !isSymbolicLink && !isMacApp) {
+                queue.push(deepFind(filePath, options, eachFn))
+              }
             }
             processed++
             if (processed === length) accept()
@@ -42,7 +43,9 @@ const deepFind = (searchPath, options, eachFn) => {
   })
 }
 
+let total = 0
 const process = (name, files) => {
+  total += files.length
   console.log('processing', name, files.length)
 }
 
@@ -57,4 +60,5 @@ deepFind(HOME_PATH, { exclude }, (file, stats) => {
 }).then(() => {
   process('remaining', files)
   console.log('time', new Date() - start)
+  console.log('TOTAL:', total)
 })
