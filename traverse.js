@@ -1,13 +1,6 @@
-'use strict'
-
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
-const HOME_PATH = os.homedir()
-const folder = HOME_PATH
-const exclude = [
-  path.join(HOME_PATH, 'Library'),
-]
 
 const deepFind = (searchPath, options, eachFn) => {
   const queue = []
@@ -43,22 +36,40 @@ const deepFind = (searchPath, options, eachFn) => {
   })
 }
 
-let total = 0
-const process = (name, files) => {
-  total += files.length
-  console.log('processing', name, files.length)
+const db = require('./db')
+const chunkSize = 125
+let promise = Promise.resolve()
+const process = (files) => {
+  return promise = promise.then(() => {
+    return db.batchInsert('files', files, chunkSize).catch((error) => {
+      console.log('processing error', error.message, error.stack)
+    });
+  })
 }
 
+const ONE_HOUR_AGO = Date.now() - 60 * 60 * 1000
+const HOME_PATH = os.homedir()
+const exclude = [
+  path.join(HOME_PATH, 'Library'),
+]
 let files = []
-const start = new Date()
-deepFind(HOME_PATH, { exclude }, (file, stats) => {
-  files.push([file, stats])
+deepFind(HOME_PATH, { exclude }, (path, stats) => {
+  files.push({
+    path,
+    type: stats.isDirectory() ? 'directory' : 'file',
+    isRecent: stats.mtime > ONE_HOUR_AGO,
+    isImportant: false, // if a seed directory
+    lastModified: stats.mtime,
+    lastProcessed: new Date(),
+  })
   if (files.length === 100000) {
-    process('chunk', files)
+    process(files)
     files = []
   }
 }).then(() => {
-  process('remaining', files)
-  console.log('time', new Date() - start)
-  console.log('TOTAL:', total)
+  return process(files)
+}).then(() => {
+  console.log('done')
+  db.destroy()
+  process.exit(0)
 })
