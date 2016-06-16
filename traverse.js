@@ -41,7 +41,9 @@ const chunkSize = 125
 let promise = Promise.resolve()
 const process = (files) => {
   return promise = promise.then(() => {
-    return db.batchInsert('files', files, chunkSize).catch((error) => {
+    return db.batchInsert('files', files, chunkSize).then(() => {
+      console.log('processed', files.length)
+    }).catch((error) => {
       console.log('processing error', error.message, error.stack)
     });
   })
@@ -71,5 +73,4 @@ deepFind(HOME_PATH, { exclude }, (path, stats) => {
 }).then(() => {
   console.log('done')
   db.destroy()
-  process.exit(0)
 })
