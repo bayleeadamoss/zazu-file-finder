@@ -2,74 +2,113 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 
-const deepFind = (searchPath, options, eachFn) => {
-  const queue = []
-  return new Promise((accept) => {
-    fs.readdir(searchPath, (err, fileNames) => {
-      let length = 0
-      let processed = 0
-      fileNames.forEach((fileName) => {
-        const filePath = path.join(searchPath, fileName)
-        const isHidden = fileName.match(/^\./)
-        const isExcluded = options.exclude.indexOf(filePath) !== -1
-        if (!isHidden && !isExcluded) {
-          length++
-          fs.stat(filePath, (err, stats) => {
-            if (!err) {
-              eachFn(filePath, stats)
-              const isDirectory = stats.isDirectory()
-              const isSymbolicLink = stats.isSymbolicLink()
-              const isMacApp = !!fileName.match(/\.app$/)
-              if (isDirectory && !isSymbolicLink && !isMacApp) {
-                queue.push(deepFind(filePath, options, eachFn))
-              }
-            }
-            processed++
-            if (processed === length) accept()
-          })
-        }
+const ONE_HOUR_AGO = Date.now() - 60 * 60 * 1000
+
+class File {
+  constructor (filePath) {
+    this.filePath = filePath
+    this.stats = null
+  }
+
+  isViewable (exclude = []) {
+    const isHidden = this.filePath.match(/\/\.[^\/]+$/)
+    const isExcluded = exclude.indexOf(this.filePath) !== -1
+    return !isHidden && !isExcluded
+  }
+
+  isDirectory () {
+    const isDirectory = this.stats.isDirectory()
+    const isSymbolicLink = this.stats.isSymbolicLink()
+    const isMacApp = !!this.filePath.match(/\.app$/)
+    return isDirectory && !isSymbolicLink && !isMacApp
+  }
+
+  toJson () {
+    return {
+      path: this.filePath,
+      type: this.isDirectory() ? 'directory' : 'file',
+      isRecent: this.stats.mtime > ONE_HOUR_AGO,
+      lastModified: this.stats.mtime,
+    }
+  }
+
+  getStats () {
+    return new Promise((accept, reject) => {
+      fs.stat(this.filePath, (err, stats) => {
+        if (!err) this.stats = stats
+        accept(this)
       })
-      if (length === 0) accept()
     })
-  }).then(() => {
-    return Promise.all(queue)
-  })
+  }
+}
+
+class Finder {
+  constructor(options) {
+    this.options = options
+  }
+
+  find (searchPath, eachFn) {
+    return new Promise((accept, reject) => {
+      fs.readdir(searchPath, (err, fileNames) => {
+        if (err) return reject(err)
+        const promises = fileNames.map((fileName) => {
+          return new File(path.join(searchPath, fileName))
+        }).filter((fileModel) => {
+          return fileModel.isViewable(this.options.exclude)
+        }).map((fileModel) => {
+          return fileModel.getStats().then((fileModel) => {
+            if (fileModel.stats) eachFn(fileModel)
+          })
+        })
+        Promise.all(promises).then(accept)
+      })
+    })
+  }
+
+  deepFind (searchPath, eachFn) {
+    const queue = []
+    return this.find(searchPath, (fileModel) => {
+      if (fileModel.isDirectory()) {
+        queue.push(this.deepFind(fileModel.filePath, eachFn))
+      }
+      eachFn(fileModel)
+    }).then(() => {
+      return Promise.all(queue)
+    })
+  }
 }
 
 const db = require('./db')
-const chunkSize = 125
+const CHUNK_SIZE = 125
 let promise = Promise.resolve()
-const process = (files) => {
+const processFiles = (files) => {
   return promise = promise.then(() => {
-    return db.batchInsert('files', files, chunkSize).then(() => {
+    console.log('found', files.length)
+    return db.batchInsert('files', files, CHUNK_SIZE).then(() => {
       console.log('processed', files.length)
     }).catch((error) => {
       console.log('processing error', error.message, error.stack)
-    });
+    })
   })
 }
 
-const ONE_HOUR_AGO = Date.now() - 60 * 60 * 1000
-const HOME_PATH = os.homedir()
+const HOME_PATH = path.join(os.homedir())
 const exclude = [
-  path.join(HOME_PATH, 'Library'),
+  path.join(os.homedir(), 'Library'),
 ]
 let files = []
-deepFind(HOME_PATH, { exclude }, (path, stats) => {
-  files.push({
-    path,
-    type: stats.isDirectory() ? 'directory' : 'file',
-    isRecent: stats.mtime > ONE_HOUR_AGO,
-    isImportant: false, // if a seed directory
-    lastModified: stats.mtime,
+const finder = new Finder({ exclude })
+finder.deepFind(HOME_PATH, (fileModel) => {
+  files.push(Object.assign({}, fileModel.toJson(), {
+    isImportant: false, // is seed directory
     lastProcessed: new Date(),
-  })
-  if (files.length === 100000) {
-    process(files)
+  }))
+  if (files.length === 50000) {
+    processFiles(files)
     files = []
   }
 }).then(() => {
-  return process(files)
+  return processFiles(files)
 }).then(() => {
   console.log('done')
   db.destroy()
