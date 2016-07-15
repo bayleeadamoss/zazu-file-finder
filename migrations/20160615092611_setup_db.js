@@ -1,7 +1,7 @@
 exports.up = function (knex, Promise) {
   return knex.schema.createTableIfNotExists('files', (table) => {
-    table.string('type')
-    table.string('path').unique()
+    table.string('path')
+    table.boolean('isDirectory')
     table.boolean('isRecent')
     table.boolean('isImportant')
     table.timestamp('lastModified')
