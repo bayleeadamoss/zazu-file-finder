@@ -1,24 +1,12 @@
-const path = require('path')
-const os = require('os')
+const directories = require('./directories')
 const Finder = require('./lib/finder')
 const query = process.argv.slice(-1)[0]
 const regex = new RegExp(query, 'i')
 
 const finder = new Finder({
-  includePath: [
-    path.join(os.homedir()),
-  ],
-  excludePath: [
-    path.join(os.homedir(), 'Library'),
-  ],
-  excludeName: [
-    'node_modules',
-    'bower_components',
-    'vendor',
-    'tmp',
-    'tags',
-    'log',
-  ],
+  includePath: directories.filePath,
+  excludePath: directories.excludePath,
+  excludeName: directories.excludeName,
 })
 
 finder.deepFind().then((files) => {

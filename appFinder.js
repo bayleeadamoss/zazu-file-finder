@@ -1,30 +1,12 @@
-const path = require('path')
-const os = require('os')
+const directories = require('./directories')
 const Finder = require('./lib/finder')
 const query = process.argv.slice(-1)[0]
 const regex = new RegExp(query, 'i')
 
 const finder = new Finder({
-  includePath: [
-    // osx
-    path.join('/', 'System', 'Library', 'PreferencePanes'),
-    path.join(os.homedir(), 'Applications'),
-    path.join('/', 'Applications'),
-    // win
-    path.join('C:', 'Program Files'),
-    path.join('C:', 'Program Files (x86)'),
-  ],
-  excludePath: [
-    path.join(os.homedir(), 'Library'),
-  ],
-  excludeName: [
-    'node_modules',
-    'bower_components',
-    'vendor',
-    'tmp',
-    'tags',
-    'log',
-  ],
+  includePath: directories.appPath,
+  excludePath: directories.excludePath,
+  excludeName: directories.excludeName,
 })
 
 finder.deepFind().then((files = []) => {
@@ -35,6 +17,4 @@ finder.deepFind().then((files = []) => {
   console.log(matchedFiles.slice(0, 9).map((file) => {
     return file.toJson()
   }))
-}).catch((err) => {
-  console.log('Error', err.message, err.stack)
 })
