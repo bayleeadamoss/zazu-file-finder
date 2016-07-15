@@ -6,7 +6,8 @@ const regex = new RegExp(query, 'i')
 
 const finder = new Finder({
   includePath: [
-    path.join(os.homedir()),
+    path.join(os.homedir(), 'Applications'),
+    path.join('Applications'),
   ],
   excludePath: [
     path.join(os.homedir(), 'Library'),
