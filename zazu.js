@@ -7,13 +7,15 @@ module.exports = {
   git: 'git@github.com:tinytacoteam/zazu-file-finder.git',
   install: 'npm install',
   blocks: {
-    input: [
+    external: [
       {
         id: 1,
         type: 'ServiceScript',
         script: 'node appCache.js',
         interval: 30000,
       },
+    ],
+    input: [
       {
         id: 2,
         type: 'RootScript',
