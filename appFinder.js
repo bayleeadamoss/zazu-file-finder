@@ -14,7 +14,7 @@ finder.deepFind().then((files) => {
     return file.isApp() && file.name.match(regex)
   })
 }).then((matchedFiles) => {
-  console.log(matchedFiles.slice(0, 9).map((file) => {
+  console.log(JSON.stringify(matchedFiles.slice(0, 9).map((file) => {
     return file.toJson()
-  }))
+  })))
 })
