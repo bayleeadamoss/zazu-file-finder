@@ -1,7 +1,7 @@
 const path = require('path')
 const os = require('os')
 const Finder = require('./lib/finder')
-const query = 'finder.js'
+const query = process.argv.slice(-1)[0]
 
 const finder = new Finder({
   includePath: [
@@ -25,7 +25,7 @@ finder.deepFind().then((files) => {
     return file.name.match(query)
   })
 }).then((matchedFiles) => {
-  console.log(matchedFiles.map((file) => {
+  console.log(matchedFiles.slice(0, 9).map((file) => {
     return file.toJson()
   }))
 })
