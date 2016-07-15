@@ -10,15 +10,21 @@ module.exports = {
     input: [
       {
         id: 1,
+        type: 'ServiceScript',
+        script: 'node appCache.js',
+        interval: 30000,
+      },
+      {
+        id: 2,
         type: 'RootScript',
         respondsTo: (input) => {
-          return false
+          return input.match(/^\w+$/)
         },
         script: 'node appFinder.js "{query}"',
         connections: ['open'],
       },
       {
-        id: 2,
+        id: 3,
         type: 'PrefixScript',
         prefix: 'find',
         space: true,
@@ -27,7 +33,7 @@ module.exports = {
         connections: ['find'],
       },
       {
-        id: 3,
+        id: 4,
         type: 'PrefixScript',
         prefix: 'open',
         space: true,

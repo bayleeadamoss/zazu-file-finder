@@ -1,20 +1,8 @@
-const directories = require('./directories')
-const Finder = require('./lib/finder')
 const query = process.argv.slice(-1)[0]
 const regex = new RegExp(query, 'i')
+const applications = require('./data/applications.json')
 
-const finder = new Finder({
-  includePath: directories.appPath,
-  excludePath: directories.excludePath,
-  excludeName: directories.excludeName,
+const filteredApplications = applications.filter((file) => {
+  return file.title.match(regex)
 })
-
-finder.deepFind().then((files) => {
-  return files.filter((file) => {
-    return file.isApp() && file.name.match(regex)
-  })
-}).then((matchedFiles) => {
-  console.log(JSON.stringify(matchedFiles.slice(0, 9).map((file) => {
-    return file.toJson()
-  })))
-})
+console.log(JSON.stringify(filteredApplications.slice(0, 9)))
