@@ -9,7 +9,7 @@ const finder = new Finder({
   excludeName: directories.excludeName,
 })
 
-finder.deepFind().then((files = []) => {
+finder.deepFind().then((files) => {
   return files.filter((file) => {
     return file.isApp() && file.name.match(regex)
   })

@@ -12,7 +12,7 @@ module.exports = {
         id: 1,
         type: 'RootScript',
         respondsTo: (input) => {
-          return true
+          return false
         },
         script: 'node appFinder.js "{query}"',
         connections: ['open'],
