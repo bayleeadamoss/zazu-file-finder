@@ -6,45 +6,49 @@ const File = require('./file')
 class Finder {
   constructor(options) {
     this.options = options
-    this.blackList = [
-      'node_modules',
-      'bower_components',
-      'vendor',
-      'tmp',
-      'tags',
-      'log',
-    ]
   }
 
-  find (searchPath, eachFn) {
+  findIn (searchPath) {
     return new Promise((accept, reject) => {
       fs.readdir(searchPath, (err, fileNames) => {
         if (err) return reject(err)
-        const promises = fileNames.filter((file) => {
-          return this.blackList.indexOf(file) === -1
-        }).map((fileName) => {
-          return new File(path.join(searchPath, fileName))
-        }).filter((fileModel) => {
-          return fileModel.isViewable(this.options.exclude)
-        }).map((fileModel) => {
-          return fileModel.getStats().then((fileModel) => {
-            if (fileModel.stats) eachFn(fileModel)
-          })
-        })
-        Promise.all(promises).then(accept)
+        accept(fileNames)
+      })
+    }).then((fileNames) => {
+      return fileNames.filter((file) => {
+        return this.options.excludeName.indexOf(file) === -1
+      }).map((fileName) => {
+        return new File(fileName, searchPath)
+      }).filter((fileModel) => {
+        return fileModel.isViewable(this.options.excludePath)
+      })
+    }).then((filteredFiles) => {
+      const promises = filteredFiles.map((fileModel) => {
+        return fileModel.getStats()
+      })
+      return Promise.all(promises).then(() => {
+        return filteredFiles
       })
     })
   }
 
-  deepFind (searchPath, eachFn) {
-    const queue = []
-    return this.find(searchPath, (fileModel) => {
-      if (fileModel.isDirectory()) {
-        queue.push(this.deepFind(fileModel.filePath, eachFn))
-      }
-      eachFn(fileModel)
-    }).then(() => {
-      return Promise.all(queue)
+  deepFind () {
+    return this.deepFindIn(this.options.includePath[0])
+  }
+
+  deepFindIn (searchPath) {
+    return this.findIn(searchPath).then((files) => {
+      const queue = []
+      files.forEach((file) => {
+        if (!file.isBroken() && file.isDirectory()) {
+          queue.push(this.deepFindIn(file.path).then((newFiles) => {
+            files = files.concat(newFiles)
+          }))
+        }
+      })
+      return Promise.all(queue).then(() => {
+        return files
+      })
     })
   }
 }
