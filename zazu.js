@@ -5,7 +5,7 @@ module.exports = {
   description: 'Find files and applications on your computer easily.',
   homepage: 'https://github.com/tinytacoteam/zazu-file-finder',
   git: 'git@github.com:tinytacoteam/zazu-file-finder.git',
-  install: 'npm install',
+  install: 'node appCache.js',
   blocks: {
     external: [
       {
