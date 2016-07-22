@@ -1,11 +1,7 @@
 module.exports = {
   name: 'File Finder',
   version: '0.0.1',
-  author: 'blainesch',
   description: 'Find files and applications on your computer easily.',
-  homepage: 'https://github.com/tinytacoteam/zazu-file-finder',
-  git: 'git@github.com:tinytacoteam/zazu-file-finder.git',
-  install: 'node appCache.js',
   blocks: {
     external: [
       {
