@@ -1,7 +1,7 @@
+const debounce = require('debounce')
+const Promise = require('bluebird')
 const directories = require('./directories')
 const Finder = require('./lib/finder')
-const query = process.argv.slice(-1)[0]
-const regex = new RegExp(query, 'i')
 
 const finder = new Finder({
   includePath: directories.filePath,
@@ -9,12 +9,31 @@ const finder = new Finder({
   excludeName: directories.excludeName,
 })
 
-finder.deepFind().then((files) => {
-  return files.filter((file) => {
-    return file.name.match(regex)
-  })
-}).then((matchedFiles) => {
-  console.log(JSON.stringify(matchedFiles.slice(0, 9).map((file) => {
-    return file.toJson()
-  })))
+Promise.config({
+  cancellation: true,
 })
+
+module.exports = (pluginContext) => {
+  let promise = Promise.resolve()
+  return (query, env = {}) => {
+    promise.cancel()
+    return promise = new Promise((resolve, reject, onCancel) => {
+      const timeout = setTimeout(resolve, 200)
+      onCancel(() => {
+        clearTimeout(timeout)
+        reject()
+      })
+    }).then(() => {
+      return finder.deepFind().then((files) => {
+        const regex = new RegExp(query, 'i')
+        return files.filter((file) => {
+          return file.name.match(regex)
+        })
+      }).then((matchedFiles) => {
+        return matchedFiles.slice(0, 9).map((file) => {
+          return file.toJson()
+        })
+      })
+    })
+  }
+}

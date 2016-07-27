@@ -1,8 +1,21 @@
-const query = process.argv.slice(-1)[0]
-const regex = new RegExp(query, 'i')
-const applications = require('./data/applications.json')
+const path = require('path')
 
-const filteredApplications = applications.filter((file) => {
-  return file.title.match(regex)
-})
-console.log(JSON.stringify(filteredApplications.slice(0, 9)))
+module.exports = (pluginContext) => {
+  const { cwd } = pluginContext
+  const applications = require(path.join(cwd, 'data', 'applications.json'))
+
+  return {
+    respondsTo: (query) => {
+      return query.match(/^\w+$/)
+    },
+    search: (query, env = {}) => {
+      const regex = new RegExp(query, 'i')
+      return new Promise((resolve, reject) => {
+        const filteredApplications = applications.filter((file) => {
+          return file.title.match(regex)
+        })
+        resolve(filteredApplications.slice(0, 9))
+      })
+    },
+  }
+}

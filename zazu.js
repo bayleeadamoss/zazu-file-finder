@@ -5,38 +5,35 @@ module.exports = {
   blocks: {
     external: [
       {
-        id: 1,
+        id: 'AppCache',
         type: 'ServiceScript',
-        script: 'node appCache.js',
+        script: 'appCache.js',
         interval: 30000,
       },
     ],
     input: [
       {
-        id: 2,
+        id: 'FindApp',
         type: 'RootScript',
-        respondsTo: (input) => {
-          return input.match(/^\w+$/)
-        },
-        script: 'node appFinder.js "{query}"',
+        script: 'appFinder.js',
         connections: ['open'],
       },
       {
-        id: 3,
+        id: 'FindScript',
         type: 'PrefixScript',
         prefix: 'find',
         space: true,
         args: 'Required',
-        script: 'node fileFinder.js "{query}"',
+        script: 'fileFinder.js',
         connections: ['find'],
       },
       {
-        id: 4,
+        id: 'OpenScript',
         type: 'PrefixScript',
         prefix: 'open',
         space: true,
         args: 'Required',
-        script: 'node fileFinder.js "{query}"',
+        script: 'fileFinder.js',
         connections: ['open'],
       },
     ],
