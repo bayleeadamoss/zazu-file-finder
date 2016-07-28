@@ -1,4 +1,3 @@
-const debounce = require('debounce')
 const Promise = require('bluebird')
 const directories = require('./directories')
 const Finder = require('./lib/finder')
