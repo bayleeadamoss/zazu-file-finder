@@ -9,12 +9,12 @@ module.exports = (pluginContext) => {
       return query.match(/^\w+$/)
     },
     search: (query, env = {}) => {
-      const regex = new RegExp(query, 'i')
+      const regex = new RegExp('\\b' + query, 'i')
       return new Promise((resolve, reject) => {
         const filteredApplications = applications.filter((file) => {
           return file.title.match(regex)
         })
-        resolve(filteredApplications.slice(0, 9))
+        resolve(filteredApplications.slice(0, 6))
       })
     },
   }
