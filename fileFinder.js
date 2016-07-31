@@ -1,6 +1,7 @@
 const Promise = require('bluebird')
 const directories = require('./directories')
 const Finder = require('./lib/finder')
+const filterSort = require('./lib/filterSort')
 
 const finder = new Finder({
   includePath: directories.filePath,
@@ -24,12 +25,9 @@ module.exports = (pluginContext) => {
       })
     }).then(() => {
       return finder.deepFind().then((files) => {
-        const regex = new RegExp(query, 'i')
-        return files.filter((file) => {
-          return file.name.match(regex)
-        })
+        return filterSort(query, files, (file) => file.name)
       }).then((matchedFiles) => {
-        return matchedFiles.slice(0, 9).map((file) => {
+        return matchedFiles.map((file) => {
           return file.toJson()
         })
       })

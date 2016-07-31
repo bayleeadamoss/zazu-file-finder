@@ -1,4 +1,5 @@
 const path = require('path')
+const filterSort = require('./lib/filterSort')
 
 module.exports = (pluginContext) => {
   const { cwd } = pluginContext
@@ -9,13 +10,9 @@ module.exports = (pluginContext) => {
       return query.match(/^\w+$/)
     },
     search: (query, env = {}) => {
-      const regex = new RegExp('\\b' + query, 'i')
-      return new Promise((resolve, reject) => {
-        const filteredApplications = applications.filter((file) => {
-          return file.title.match(regex)
-        })
-        resolve(filteredApplications.slice(0, 6))
-      })
+      return Promise.resolve(
+        filterSort(query, applications, (item) => item.title)
+      )
     },
   }
 }

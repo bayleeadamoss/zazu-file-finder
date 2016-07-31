@@ -1,0 +1,28 @@
+const describe = require('tape')
+const proxyquire = require('proxyquire')
+
+const File = require('../lib/file')
+class StubFile extends File {
+  isDirectory () {
+    return false
+  }
+}
+class StubFinder {
+  deepFind () {
+    return Promise.resolve([
+      new StubFile('Docker Quickstart Terminal.app', '/Applications/Utility/'),
+      new StubFile('Terminal.app', '/Applications/Utility/'),
+    ])
+  }
+}
+const fileFinder = proxyquire('../fileFinder', {
+  './lib/finder': StubFinder,
+})
+
+describe('Sorts app name higher', function (assert) {
+  assert.plan(1)
+  fileFinder({})('term').then((results) => {
+    const resultTitles = results.map((result) => result.title)
+    assert.deepEqual(resultTitles, ['Terminal', 'Docker Quickstart Terminal'])
+  })
+})

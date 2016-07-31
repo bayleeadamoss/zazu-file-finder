@@ -10,9 +10,20 @@
     "search",
     "lookup"
   ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test"
+  },
   "author": "Tiny Taco Team",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.1"
+  },
+  "devDependencies": {
+    "mkdirp": "^0.5.1",
+    "proxyquire": "^1.7.10",
+    "tape": "^4.6.0"
   }
 }
