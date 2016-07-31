@@ -18,3 +18,15 @@ name:
 ~~~
 > chrome
 ~~~
+
+## Installing
+
+Add `tinytacoteam/zazu-file-finder` inside of `plugins` block of your  `~/.zazurc.js` file.
+
+~~~ javascript
+module.exports = {
+  'plugins': [
+    'tinytacoteam/zazu-file-finder',
+  ],
+}
+~~~
