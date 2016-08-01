@@ -27,12 +27,12 @@ const cache = path.join(rawCwd, 'data', 'applications.json')
 mkdirp.sync(path.join(rawCwd, 'data'))
 const updateCache = (items) => {
   fs.writeFileSync(cache, JSON.stringify(items))
+  return path.dirname(path.dirname(require.resolve(cache)))
 }
-const cwd = path.dirname(path.dirname(require.resolve(cache)))
 
 describe('Sorts app name higher', function (assert) {
   assert.plan(1)
-  updateCache(collection)
+  const cwd = updateCache(collection)
 
   appFinder({cwd}).search('term').then((results) => {
     const resultTitles = results.map((result) => result.title)
@@ -42,7 +42,7 @@ describe('Sorts app name higher', function (assert) {
 
 describe('Re-fetches apps', function (assert) {
   assert.plan(1)
-  updateCache([collection[0]])
+  const cwd = updateCache([collection[0]])
 
   appFinder({cwd}).search('term').then((results) => {
     const resultTitles = results.map((result) => result.title)
