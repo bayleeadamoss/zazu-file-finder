@@ -15,14 +15,16 @@ class StubFinder {
     ])
   }
 }
-const fileFinder = proxyquire('../fileFinder', {
-  './lib/finder': StubFinder,
-})
 
 describe('Sorts app name higher', function (assert) {
   assert.plan(1)
-  fileFinder({})('term').then((results) => {
+  process.argv.push('term')
+  const fileFinder = proxyquire('../fileFinder', {
+    './lib/finder': StubFinder,
+  })
+  process.argv = process.argv.slice(0, -1)
+  process.send = (results) => {
     const resultTitles = results.map((result) => result.title)
     assert.deepEqual(resultTitles, ['Terminal', 'Docker Quickstart Terminal'])
-  })
+  }
 })
