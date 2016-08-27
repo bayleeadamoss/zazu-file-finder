@@ -7,8 +7,8 @@ module.exports = {
       {
         id: 'AppCache',
         type: 'ServiceScript',
-        script: 'appCache.js',
-        interval: 30000,
+        script: 'appCacheManager.js',
+        interval: 30 * 1000,
       },
     ],
     input: [

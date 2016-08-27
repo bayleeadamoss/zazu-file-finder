@@ -3,16 +3,15 @@ const Finder = require('./lib/finder')
 const fs = require('fs')
 const path = require('path')
 
-const finder = new Finder({
-  includePath: directories.appPath,
-  excludePath: directories.excludePath,
-  excludeName: directories.excludeName,
-})
-
-module.exports = (pluginContext) => {
+function setup (pluginContext) {
   const { cwd } = pluginContext
-  const appPath = path.join(cwd, 'data', 'applications.json')
-  return (env = {}) => {
+  const appPath = path.join('data', 'applications.json')
+  const finder = new Finder({
+    includePath: directories.appPath,
+    excludePath: directories.excludePath,
+    excludeName: directories.excludeName,
+  })
+  return function run () {
     return finder.deepFind().then((files) => {
       return files.filter((file) => {
         return file.isApp()
@@ -29,3 +28,7 @@ module.exports = (pluginContext) => {
     })
   }
 }
+
+const cwd = __dirname
+
+setup({ cwd })()
