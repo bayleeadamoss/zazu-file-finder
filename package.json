@@ -18,9 +18,6 @@
   },
   "author": "Tiny Taco Team",
   "license": "MIT",
-  "dependencies": {
-    "bluebird": "^3.4.1"
-  },
   "devDependencies": {
     "mkdirp": "^0.5.1",
     "proxyquire": "^1.7.10",

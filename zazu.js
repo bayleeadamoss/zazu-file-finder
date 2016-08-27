@@ -24,7 +24,7 @@ module.exports = {
         prefix: 'find',
         space: true,
         args: 'Required',
-        script: 'fileFinder.js',
+        script: 'fileFinderManager.js',
         connections: ['find'],
       },
       {
@@ -33,7 +33,7 @@ module.exports = {
         prefix: 'open',
         space: true,
         args: 'Required',
-        script: 'fileFinder.js',
+        script: 'fileFinderManager.js',
         connections: ['open'],
       },
     ],
