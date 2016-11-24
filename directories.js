@@ -47,8 +47,12 @@ platform.darwin = {
 platform.linux = {
   filePath: [
     path.join(os.homedir()),
+    path.join('/', 'usr', 'bin'),
   ],
-  appPath: [],
+  appPath: [
+    path.join('/', 'usr', 'bin'),
+    path.join('/', 'opt'),
+  ],
   excludePath: [],
   excludeName: [
     'node_modules',

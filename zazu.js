@@ -16,7 +16,7 @@ module.exports = {
         id: 'FindApp',
         type: 'RootScript',
         script: 'appFinder.js',
-        connections: ['open'],
+        connections: ['openApp'],
       },
       {
         id: 'FindScript',
@@ -45,6 +45,12 @@ module.exports = {
       {
         id: 'find',
         type: 'ShowFile',
+      },
+      {
+        id: 'openApp',
+        type: 'UserScript',
+        script: 'openAppManager.js',
+        connections: ['open'],
       },
     ],
   },
