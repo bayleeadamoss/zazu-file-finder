@@ -22,5 +22,8 @@
     "mkdirp": "^0.5.1",
     "proxyquire": "^1.7.10",
     "tape": "^4.6.0"
+  },
+  "dependencies": {
+    "plist": "^2.0.1"
   }
 }
