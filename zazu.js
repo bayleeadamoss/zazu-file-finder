@@ -1,3 +1,4 @@
+// Deprecated use zazu.json now.
 module.exports = {
   name: 'File Finder',
   version: '0.0.1',
