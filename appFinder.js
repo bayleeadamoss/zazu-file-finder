@@ -13,7 +13,7 @@ module.exports = (pluginContext) => {
     search: (query, env = {}) => {
       const applications = freshRequire(appCachePath)
       return Promise.resolve(
-        filterSort(query, applications, (item) => item.title)
+        filterSort(query, applications, (item) => item.title + item.subtitle)
       )
     },
   }
