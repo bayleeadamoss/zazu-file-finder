@@ -21,12 +21,12 @@ name:
 
 ## Installing
 
-Add `tinytacoteam/zazu-file-finder` inside of `plugins` block of your  `~/.zazurc.js` file.
+Add `tinytacoteam/zazu-file-finder` inside of `plugins` block of your  `~/.zazurc.json` file.
 
-~~~ javascript
-module.exports = {
-  'plugins': [
-    'tinytacoteam/zazu-file-finder',
-  ],
+~~~ json
+{
+  "plugins": [
+    "tinytacoteam/zazu-file-finder"
+  ]
 }
 ~~~
