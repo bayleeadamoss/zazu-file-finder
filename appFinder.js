@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const filterSort = require('./lib/filterSort')
 const freshRequire = require('./lib/freshRequire')
@@ -11,6 +12,9 @@ module.exports = (pluginContext) => {
       return query.match(/^[\w ]+$/)
     },
     search: (query, env = {}) => {
+      if (!fs.existsSync(appCachePath)) {
+        return Promise.resolve()
+      }
       const applications = freshRequire(appCachePath)
       return Promise.resolve(
         filterSort(query, applications, (item) => item.title + item.subtitle)
