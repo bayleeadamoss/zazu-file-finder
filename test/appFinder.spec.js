@@ -14,6 +14,13 @@ const collection = [
   },
   {
     icon: 'fa-file',
+    title: 'Some-magic.file-with-chars',
+    subtitle: '/Applications/Utility/Some-magic-file.with-chars',
+    value: '/Applications/Utility/Some-magic.file-with-chars',
+    id: '/Applications/Utility/Some-magic.file-with-chars',
+  },
+  {
+    icon: 'fa-file',
     title: 'Terminal',
     subtitle: '/Applications/Utility/Terminal.app',
     value: '/Applications/Utility/Terminal.app',
@@ -53,4 +60,9 @@ describe('Re-fetches apps', function (assert) {
 describe('Works with space in query', function (assert) {
   assert.plan(1)
   assert.ok(appFinder({cwd: ''}).respondsTo('quickstart ter'))
+})
+
+describe('Works with dots and dashes', function (assert) {
+  assert.plan(1)
+  assert.ok(appFinder({cwd: ''}).respondsTo('some-magic.'))
 })
