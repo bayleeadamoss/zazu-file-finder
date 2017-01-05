@@ -13,7 +13,7 @@ module.exports = (pluginContext) => {
     },
     search: (query, env = {}) => {
       if (!fs.existsSync(appCachePath)) {
-        return Promise.resolve()
+        return Promise.resolve([])
       }
       const applications = freshRequire(appCachePath)
       return Promise.resolve(
