@@ -50,6 +50,7 @@ platform.linux = {
     path.join('/', 'usr', 'bin'),
   ],
   appPath: [
+    path.join(os.homedir()),
     path.join('/', 'usr', 'bin'),
     path.join('/', 'opt'),
   ],
