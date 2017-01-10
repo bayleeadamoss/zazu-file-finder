@@ -14,7 +14,7 @@ function setup (pluginContext) {
   return function run () {
     return finder.deepFind().then((files) => {
       return files.filter((file) => {
-        return file.isApp()
+        return !file.isDirectory() && file.isApp()
       })
     }).then((matchedFiles) => {
       const fileJson = JSON.stringify(matchedFiles.map((file) => {
