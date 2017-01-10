@@ -47,7 +47,6 @@ platform.darwin = {
 platform.linux = {
   filePath: [
     path.join(os.homedir()),
-    path.join('/', 'usr', 'bin'),
   ],
   appPath: [
     path.join(os.homedir(), 'bin'),
