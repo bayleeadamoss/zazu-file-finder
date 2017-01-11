@@ -15,7 +15,7 @@ function setup (pluginContext) {
     directories.appPath = directories.appPath.concat(extra.appPath || []);
     directories.excludePath = directories.excludePath.concat(extra.excludePath || []);
     directories.excludeName = directories.excludeName.concat(extra.excludeName || []);
-  } else {
+  } else if (extra) {
     extra.appPath && (directories.appPath = extra.appPath)
     extra.excludePath && (directories.excludePath = extra.excludePath)
     extra.excludeName && (directories.excludeName = extra.excludeName)

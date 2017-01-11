@@ -13,7 +13,7 @@ function search(pluginContext) {
     directories.filePath = directories.filePath.concat(extra.filePath || []);
     directories.excludePath = directories.excludePath.concat(extra.excludePath || []);
     directories.excludeName = directories.excludeName.concat(extra.excludeName || []);
-  } else {
+  } else if (extra) {
     extra.filePath && (directories.filePath = extra.filePath)
     extra.excludePath && (directories.excludePath = extra.excludePath)
     extra.excludeName && (directories.excludeName = extra.excludeName)
