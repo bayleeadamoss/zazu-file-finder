@@ -2,15 +2,31 @@ const directories = require('./directories')
 const Finder = require('./lib/finder')
 const fs = require('fs')
 const path = require('path')
+const resolvePaths = require('./lib/resolvepaths')
 
 function setup (pluginContext) {
+
   const { cwd } = pluginContext
-  const appPath = path.join('data', 'applications.json')
+  const { extra } = pluginContext
+  const { append } = pluginContext
+  const appPath = path.join(cwd, 'data', 'applications.json')
+
+  if (append) {
+    directories.appPath = directories.appPath.concat(extra.appPath || []);
+    directories.excludePath = directories.excludePath.concat(extra.excludePath || []);
+    directories.excludeName = directories.excludeName.concat(extra.excludeName || []);
+  } else {
+    extra.appPath && (directories.appPath = extra.appPath)
+    extra.excludePath && (directories.excludePath = extra.excludePath)
+    extra.excludeName && (directories.excludeName = extra.excludeName)
+  }
+
   const finder = new Finder({
-    includePath: directories.appPath,
-    excludePath: directories.excludePath,
-    excludeName: directories.excludeName,
+    includePath: resolvePaths(directories.appPath),
+    excludePath: resolvePaths(directories.excludePath),
+    excludeName: resolvePaths(directories.excludeName),
   })
+
   return function run () {
     return finder.deepFind().then((files) => {
       return files.filter((file) => {
@@ -29,6 +45,15 @@ function setup (pluginContext) {
   }
 }
 
-const cwd = __dirname
+(() => {
+  const cwd = __dirname
+  const options = process.argv.slice(-1)[0] ? JSON.parse(process.argv.slice(-1)[0]) : {}
+  const {append} = options;
+  const {directories} = options;
 
-setup({ cwd })()
+  setup({
+    cwd: cwd,
+    append: !!append,
+    extra: directories
+  })()
+})()

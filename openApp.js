@@ -11,9 +11,7 @@ module.exports = (pluginContext) => {
       }
 
       // Use absolute paths at all time
-      if (app.substring(0, 1) == '~') {
-        app = os.homedir() + app.substring(1);
-      }
+      app = app.replace(/^~/, os.homedir());
 
       var p =  spawn(app, [], {
         cwd: os.homedir()
