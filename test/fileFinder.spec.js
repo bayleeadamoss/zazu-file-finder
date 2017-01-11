@@ -19,6 +19,7 @@ class StubFinder {
 describe('Sorts app name higher', function (assert) {
   assert.plan(1)
   process.argv.push('term')
+  process.argv.push('{}')
   const fileFinder = proxyquire('../fileFinder', {
     './lib/finder': StubFinder,
   })
