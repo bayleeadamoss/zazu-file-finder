@@ -26,6 +26,13 @@ const collection = [
     value: '/Applications/Utility/Terminal.app',
     id: '/Applications/Utility/Terminal.app',
   },
+  {
+    icon: 'fa-file',
+    title: 'Code',
+    subtitle: '/Applications/Vitual Studio Code.app',
+    value: '/Applications/Vitual Studio Code.app',
+    id: '/Applications/Vitual Studio Code.app',
+  }
 ]
 
 const appFinder = require('../appFinder')
@@ -65,4 +72,9 @@ describe('Works with space in query', function (assert) {
 describe('Works with dots and dashes', function (assert) {
   assert.plan(1)
   assert.ok(appFinder({cwd: ''}).respondsTo('some-magic.'))
+})
+
+describe('Works with abbreviations', function (assert) {
+  assert.plan(1)
+  assert.ok(appFinder({cwd: ''}).respondsTo('vsc'))
 })
