@@ -55,7 +55,7 @@
       {
         "id": "openApp",
         "type": "UserScript",
-        "script": "openAppManager.js",
+        "script": "openApp.js",
         "connections": [
           "open"
         ]
