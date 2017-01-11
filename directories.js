@@ -61,6 +61,7 @@ platform.linux = {
     'tmp',
     'tags',
     'log',
+    'X11',
   ],
 }
 
