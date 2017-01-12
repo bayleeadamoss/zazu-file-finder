@@ -1,5 +1,26 @@
-const app = process.argv.slice(-1)[0]
-const cp = require('child_process')
+const spawn = require('child_process').spawn
+const os = require('os')
+const path = require('path')
 
-cp.exec(app)
-process.exit(0)
+module.exports = (pluginContext) => {
+  const { cwd } = pluginContext
+  return (app, env = {}) => {
+    return new Promise((resolve, reject) => {
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        return resolve(value)
+      }
+
+      // Use absolute paths at all time
+      app = app.replace(/^~/, os.homedir());
+
+      var p =  spawn(app, [], {
+        cwd: os.homedir()
+      })
+      p.stderr.on('data', (data) => {
+        console.error('err (' + path.basename(app) + '): ' + data);
+      })
+
+      reject() // break chain
+    })
+  }
+}

@@ -9,7 +9,7 @@ module.exports = (pluginContext) => {
 
   return {
     respondsTo: (query) => {
-      return query.match(/^[\w\-. ]+$/)
+      return query.match(/^[\w\-.\\\/ ]+$/)
     },
     search: (query, env = {}) => {
       if (!fs.existsSync(appCachePath)) {
