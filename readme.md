@@ -30,3 +30,33 @@ Add `tinytacoteam/zazu-file-finder` inside of `plugins` block of your  `~/.zazur
   ]
 }
 ~~~
+
+If you want to overwrite the directories you can.
+
+  * `append` if you want to keep the original, and just add additonal
+    directories, set this to `true`
+  * `directories.filePath` set this array for which paths you want FILES to be
+    searched for via `open *` or `find *`
+  * `directories.appPath` will be an array of places you wan to find your
+    APPLICATIONS. For example `chrome`
+
+~~~ json
+{
+  "plugins": [
+    {
+      "name": "tinytacoteam/zazu-file-finder",
+      "variables": {
+        "append": true,
+        "directories": {
+          "filePath": [
+            "~/Documents"
+          ]
+          "appPath": [
+            "/usr/games"
+          ]
+        }
+      }
+    }
+  ]
+}
+~~~
