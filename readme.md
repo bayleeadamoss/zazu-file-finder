@@ -50,7 +50,7 @@ If you want to overwrite the directories you can.
         "directories": {
           "filePath": [
             "~/Documents"
-          ]
+          ],
           "appPath": [
             "/usr/games"
           ]
