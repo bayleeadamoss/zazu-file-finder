@@ -3,16 +3,15 @@ const Finder = require('./lib/finder')
 const filterSort = require('./lib/filterSort')
 const resolvePaths = require('./lib/resolvepaths')
 
-function search(pluginContext) {
+function search (pluginContext) {
   const { query } = pluginContext
-  const { cwd } = pluginContext
   const { extra } = pluginContext
   const { append } = pluginContext
 
   if (append) {
-    directories.filePath = directories.filePath.concat(extra.filePath || []);
-    directories.excludePath = directories.excludePath.concat(extra.excludePath || []);
-    directories.excludeName = directories.excludeName.concat(extra.excludeName || []);
+    directories.filePath = directories.filePath.concat(extra.filePath || [])
+    directories.excludePath = directories.excludePath.concat(extra.excludePath || [])
+    directories.excludeName = directories.excludeName.concat(extra.excludeName || [])
   } else if (extra) {
     extra.filePath && (directories.filePath = extra.filePath)
     extra.excludePath && (directories.excludePath = extra.excludePath)
@@ -24,7 +23,6 @@ function search(pluginContext) {
     excludePath: resolvePaths(directories.excludePath),
     excludeName: resolvePaths(directories.excludeName),
   })
-
 
   function findBy (query) {
     return finder.deepFind().then((files) => {
@@ -45,13 +43,13 @@ function search(pluginContext) {
   const cwd = __dirname
   const query = process.argv.slice(-2)[0]
   const options = process.argv.slice(-1)[0] ? JSON.parse(process.argv.slice(-1)[0]) : {}
-  const {append} = options;
-  const {directories} = options;
+  const {append} = options
+  const {directories} = options
 
   search({
     cwd: cwd,
     query: query,
     append: !!append,
-    extra: directories
+    extra: directories,
   })
 })()

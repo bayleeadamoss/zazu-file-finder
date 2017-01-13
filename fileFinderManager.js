@@ -2,12 +2,10 @@ const fork = require('child_process').fork
 const path = require('path')
 
 module.exports = (pluginContext) => {
-
   const { cwd } = pluginContext
   const appCacheProcess = path.join(cwd, 'fileFinder.js')
   let runner
   return (query, options = {}) => {
-
     if (runner) {
       runner.kill('SIGKILL')
     }
@@ -17,7 +15,6 @@ module.exports = (pluginContext) => {
       stdio: 'pipe',
     })
     return new Promise((resolve) => {
-      const raw = []
       runner.on('message', (data) => {
         resolve(data)
       })

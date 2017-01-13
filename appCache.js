@@ -5,16 +5,15 @@ const path = require('path')
 const resolvePaths = require('./lib/resolvepaths')
 
 function setup (pluginContext) {
-
   const { cwd } = pluginContext
   const { extra } = pluginContext
   const { append } = pluginContext
   const appPath = path.join(cwd, 'data', 'applications.json')
 
   if (append) {
-    directories.appPath = directories.appPath.concat(extra.appPath || []);
-    directories.excludePath = directories.excludePath.concat(extra.excludePath || []);
-    directories.excludeName = directories.excludeName.concat(extra.excludeName || []);
+    directories.appPath = directories.appPath.concat(extra.appPath || [])
+    directories.excludePath = directories.excludePath.concat(extra.excludePath || [])
+    directories.excludeName = directories.excludeName.concat(extra.excludeName || [])
   } else if (extra) {
     extra.appPath && (directories.appPath = extra.appPath)
     extra.excludePath && (directories.excludePath = extra.excludePath)
@@ -48,12 +47,12 @@ function setup (pluginContext) {
 (() => {
   const cwd = __dirname
   const options = process.argv.slice(-1)[0] ? JSON.parse(process.argv.slice(-1)[0]) : {}
-  const {append} = options;
-  const {directories} = options;
+  const {append} = options
+  const {directories} = options
 
   setup({
     cwd: cwd,
     append: !!append,
-    extra: directories
+    extra: directories,
   })()
 })()

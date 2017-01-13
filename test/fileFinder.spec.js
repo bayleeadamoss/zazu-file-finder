@@ -1,12 +1,13 @@
 const describe = require('tape')
 const proxyquire = require('proxyquire')
-
 const File = require('../lib/file')
+
 class StubFile extends File {
   isDirectory () {
     return false
   }
 }
+
 class StubFinder {
   deepFind () {
     return Promise.resolve([
@@ -20,7 +21,7 @@ describe('Sorts app name higher', function (assert) {
   assert.plan(1)
   process.argv.push('term')
   process.argv.push('{}')
-  const fileFinder = proxyquire('../fileFinder', {
+  proxyquire('../fileFinder', {
     './lib/finder': StubFinder,
   })
   process.argv = process.argv.slice(0, -1)
