@@ -28,9 +28,9 @@ function search (pluginContext) {
     return finder.deepFind().then((files) => {
       return filterSort(query, files, (file) => file.name)
     }).then((matchedFiles) => {
-      return matchedFiles.map((file) => {
+      return Promise.all(matchedFiles.map((file) => {
         return file.toJson()
-      })
+      }))
     })
   }
 

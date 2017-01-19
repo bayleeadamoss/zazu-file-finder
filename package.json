@@ -29,6 +29,7 @@
     "tape": "^4.6.0"
   },
   "dependencies": {
+    "iconutil": "^1.0.1",
     "plist": "^2.0.1"
   }
 }

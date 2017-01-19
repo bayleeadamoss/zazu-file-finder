@@ -32,9 +32,11 @@ function setup (pluginContext) {
         return !file.isDirectory() && file.isApp()
       })
     }).then((matchedFiles) => {
-      const fileJson = JSON.stringify(matchedFiles.map((file) => {
+      return Promise.all(matchedFiles.map((file) => {
         return file.toJson()
       }))
+    }).then((data) => {
+      const fileJson = JSON.stringify(foo)
       return new Promise((resolve, reject) => {
         fs.writeFile(appPath, fileJson, (err) => {
           err ? reject(err) : resolve()
