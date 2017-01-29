@@ -7,11 +7,7 @@ platform.win32 = {
   filePath: [
     path.join(os.homedir()),
   ],
-  appPath: [
-    path.join(process.env.USERPROFILE, 'Desktop'),
-    path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
-    path.join(process.env.ProgramData, 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
-  ],
+  appPath: [],
   excludePath: [],
   excludeName: [
     'node_modules',
@@ -21,6 +17,20 @@ platform.win32 = {
     'tags',
     'log',
   ],
+}
+
+if (process.platform === 'win32') {
+  if (process.env.USERPROFILE) {
+    platform.win32.appPath.push(path.join(process.env.USERPROFILE, 'Desktop'))
+  }
+
+  if (process.env.APPDATA) {
+    platform.win32.appPath.push(path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs'))
+  }
+
+  if (process.env.ProgramData) {
+    platform.win32.appPath.push(path.join(process.env.ProgramData, 'Microsoft', 'Windows', 'Start Menu', 'Programs'))
+  }
 }
 
 platform.darwin = {
