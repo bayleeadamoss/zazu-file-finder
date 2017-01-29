@@ -36,7 +36,7 @@ function setup (pluginContext) {
         return file.toJson()
       }))
     }).then((data) => {
-      const fileJson = JSON.stringify(foo)
+      const fileJson = JSON.stringify(data)
       return new Promise((resolve, reject) => {
         fs.writeFile(appPath, fileJson, (err) => {
           err ? reject(err) : resolve()

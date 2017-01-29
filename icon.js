@@ -8,6 +8,7 @@ const getSize = (name) => {
 }
 
 iconutil.toIconset(path, (err, icons) => {
+  if (err) throw err
   const biggestIcon = Object.keys(icons).reduce((biggest, latest) => {
     const biggestSize = getSize(biggest)
     const latestSize = getSize(latest)
