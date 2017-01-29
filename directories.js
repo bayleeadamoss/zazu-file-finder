@@ -8,8 +8,9 @@ platform.win32 = {
     path.join(os.homedir()),
   ],
   appPath: [
-    path.join('C:', 'Program Files (x86)'),
-    path.join('C:', 'Program Files'),
+    path.join(process.env.USERPROFILE, 'Desktop'),
+    path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
+    path.join(process.env.ProgramData, 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
   ],
   excludePath: [],
   excludeName: [
