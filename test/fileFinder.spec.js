@@ -6,6 +6,10 @@ class StubFile extends File {
   isDirectory () {
     return false
   }
+  loadInfo () {
+    this.info = {}
+    this.iconPath = ''
+  }
 }
 
 class StubFinder {

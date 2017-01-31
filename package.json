@@ -29,6 +29,9 @@
     "tape": "^4.6.0"
   },
   "dependencies": {
-    "plist": "^2.0.1"
+    "async": "^2.1.4",
+    "iconutil": "^1.0.1",
+    "sha1": "^1.1.1",
+    "simple-plist": "^0.2.1"
   }
 }

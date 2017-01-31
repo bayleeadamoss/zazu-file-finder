@@ -24,6 +24,7 @@ function setup (pluginContext) {
     includePath: resolvePaths(directories.appPath),
     excludePath: resolvePaths(directories.excludePath),
     excludeName: resolvePaths(directories.excludeName),
+    cwd,
   })
 
   return function run () {
@@ -47,8 +48,8 @@ function setup (pluginContext) {
 (() => {
   const cwd = __dirname
   const options = process.argv.slice(-1)[0] ? JSON.parse(process.argv.slice(-1)[0]) : {}
-  const {append} = options
-  const {directories} = options
+  const { append } = options
+  const { directories } = options
 
   setup({
     cwd: cwd,
