@@ -15,6 +15,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "lint_fix": "eslint . --fix",
     "test": "node test"
   },
   "author": "Tiny Taco Team",
@@ -29,7 +30,7 @@
     "tape": "^4.6.0"
   },
   "dependencies": {
-    "iconutil": "^1.0.1",
+    "electron-prebuilt": "~1.3.1",
     "plist": "^2.0.1"
   }
 }
