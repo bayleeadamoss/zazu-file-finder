@@ -24,12 +24,12 @@
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
-    "mkdirp": "^0.5.1",
     "proxyquire": "^1.7.10",
     "rewire": "^2.5.2",
     "tape": "^4.6.0"
   },
   "dependencies": {
+    "mkdirp": "^0.5.1",
     "async": "^2.1.4",
     "iconutil": "^1.0.2",
     "simple-plist": "^0.2.1"
