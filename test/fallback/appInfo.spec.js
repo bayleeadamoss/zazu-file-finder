@@ -1,10 +1,8 @@
 const describe = require('tape')
-const fs = require('fs')
-const os = require('os')
 const path = require('path')
 const rewire = require('rewire')
 
-const appInfo = rewire('../lib/appInfo')
+const appInfo = rewire('../../adapters/fallback/lib/appInfo')
 
 const TERMINAL_APP = 'Terminal.app'
 const TERMINAL_APP_PATH = '/Applications/Utilities/Terminal.app'
@@ -19,8 +17,10 @@ describe('appInfo.sha1() should be able to generate SHA1 hash', (assert) => {
 })
 
 describe('appInfo.getAppIconCachePath() should return the relative path in correct format', (assert) => {
-  assert.equal(appInfo.getAppIconCachePath(TERMINAL_APP_PATH, TERMINAL_APP),
-    path.join('data', 'icons', 'Terminal.app-a4336d71081c5b8029d8484c74a9dd1f94c8cd00.png'))
+  assert.equal(
+    appInfo.getAppIconCachePath(TERMINAL_APP_PATH, TERMINAL_APP),
+    path.join('data', 'icons', 'Terminal.app-a4336d71081c5b8029d8484c74a9dd1f94c8cd00.png')
+  )
   assert.end()
 })
 

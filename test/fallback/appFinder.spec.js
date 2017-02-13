@@ -28,20 +28,21 @@ const collection = [
   },
 ]
 
-const appFinder = require('../appFinder')
+const Fallback = require('../../adapters/fallback')
 const rawCwd = path.join(os.tmpdir())
-const cache = path.join(rawCwd, 'data', 'applications.json')
-mkdirp.sync(path.join(rawCwd, 'data'))
+const appFinder = new Fallback(rawCwd, {})
+const cache = path.join(rawCwd, 'adapters', 'fallback', 'data', 'applications.json')
+mkdirp.sync(path.join(rawCwd, 'adapters', 'fallback', 'data'))
 const updateCache = (items) => {
   fs.writeFileSync(cache, JSON.stringify(items))
-  return path.dirname(path.dirname(require.resolve(cache)))
+  appFinder.hasCache = true
 }
 
 describe('Sorts app name higher', function (assert) {
   assert.plan(1)
-  const cwd = updateCache(collection)
+  updateCache(collection)
 
-  appFinder({cwd}).search('term').then((results) => {
+  appFinder.findApps('term').then((results) => {
     const resultTitles = results.map((result) => result.title)
     assert.deepEqual(resultTitles, ['Terminal', 'Docker Quickstart Terminal'])
   })
@@ -49,20 +50,10 @@ describe('Sorts app name higher', function (assert) {
 
 describe('Re-fetches apps', function (assert) {
   assert.plan(1)
-  const cwd = updateCache([collection[0]])
+  updateCache([collection[0]])
 
-  appFinder({cwd}).search('term').then((results) => {
+  appFinder.findApps('term').then((results) => {
     const resultTitles = results.map((result) => result.title)
     assert.deepEqual(resultTitles, ['Docker Quickstart Terminal'])
   })
-})
-
-describe('Works with space in query', function (assert) {
-  assert.plan(1)
-  assert.ok(appFinder({cwd: ''}).respondsTo('quickstart ter'))
-})
-
-describe('Works with dots and dashes', function (assert) {
-  assert.plan(1)
-  assert.ok(appFinder({cwd: ''}).respondsTo('some-magic.'))
 })

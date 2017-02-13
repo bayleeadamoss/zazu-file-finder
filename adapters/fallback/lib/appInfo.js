@@ -16,7 +16,7 @@ const loadAppInfo = (appPath) => process.platform === 'darwin' ? loadAppInfoMac(
 
 const sha1 = (message) => crypto.createHash('sha1').update(message).digest().toString('hex')
 
-const getAppIconCachePath = (appPath, appName) => path.join('data', 'icons', `${appName}-${sha1(appPath)}.png`)
+const getAppIconCachePath = (appPath, appName, cwd = '') => path.join(cwd, 'data', 'icons', `${appName}-${sha1(appPath)}.png`)
 
 const getAppIcnsPath = (appPath, info) => {
   if (!info.CFBundleIconFile) {

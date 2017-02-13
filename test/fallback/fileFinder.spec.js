@@ -1,6 +1,6 @@
 const describe = require('tape')
 const proxyquire = require('proxyquire')
-const File = require('../lib/file')
+const File = require('../../adapters/fallback/lib/file')
 
 class StubFile extends File {
   isDirectory () {
@@ -25,7 +25,7 @@ describe('Sorts app name higher', function (assert) {
   assert.plan(1)
   process.argv.push('term')
   process.argv.push('{}')
-  proxyquire('../fileFinder', {
+  proxyquire('../../adapters/fallback/fileFinder', {
     './lib/finder': StubFinder,
   })
   process.argv = process.argv.slice(0, -1)

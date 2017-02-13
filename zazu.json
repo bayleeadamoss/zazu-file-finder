@@ -7,40 +7,35 @@
       {
         "id": "AppCache",
         "type": "ServiceScript",
-        "script": "appCacheManager.js",
-        "interval": 30000
+        "script": "appCache.js",
+        "interval": 1000,
+        "_interval": 30000
       }
     ],
     "input": [
       {
-        "id": "FindApp",
+        "id": "AppFinder",
         "type": "RootScript",
         "script": "appFinder.js",
-        "connections": [
-          "openApp"
-        ]
+        "connections": ["openApp"]
       },
       {
-        "id": "FindScript",
+        "id": "FindFile",
         "type": "PrefixScript",
         "prefix": "find",
         "space": true,
         "args": "Required",
-        "script": "fileFinderManager.js",
-        "connections": [
-          "find"
-        ]
+        "script": "fileFinder.js",
+        "connections": ["find"]
       },
       {
-        "id": "OpenScript",
+        "id": "OpenFile",
         "type": "PrefixScript",
         "prefix": "open",
         "space": true,
         "args": "Required",
-        "script": "fileFinderManager.js",
-        "connections": [
-          "open"
-        ]
+        "script": "fileFinder.js",
+        "connections": ["open"]
       }
     ],
     "output": [
@@ -56,9 +51,7 @@
         "id": "openApp",
         "type": "UserScript",
         "script": "openApp.js",
-        "connections": [
-          "open"
-        ]
+        "connections": ["open"]
       }
     ]
   }

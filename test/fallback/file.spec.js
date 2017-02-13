@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 
-const File = require('../lib/file')
+const File = require('../../adapters/fallback/lib/file')
 
 //  Do the real world test on macOS system
 if (process.platform === 'darwin') {

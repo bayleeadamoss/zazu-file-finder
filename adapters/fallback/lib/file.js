@@ -53,13 +53,11 @@ class File {
   loadInfo () {
     try {
       if (this.isAppMac() && Object.keys(this.info).length === 0) {
-        //  macOS App
         this.info = appInfo.loadAppInfo(this.path)
-        this.iconPath = appInfo.getAppIconCachePath(this.path, this.name)
-        const iconAbsPath = path.join(this.options.cwd || '.', this.iconPath)
-        if (!fs.existsSync(iconAbsPath)) {
+        this.iconPath = appInfo.getAppIconCachePath(this.path, this.name, this.options.cwd)
+        if (!fs.existsSync(this.iconPath)) {
           const icnsPath = appInfo.getAppIcnsPath(this.path, this.info)
-          appInfo.generateIcon(icnsPath, iconAbsPath)
+          appInfo.generateIcon(icnsPath, this.iconPath)
             .catch(err => console.trace(err))
         }
       }
