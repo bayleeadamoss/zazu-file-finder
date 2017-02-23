@@ -1,7 +1,7 @@
 const directories = require('../../directories')
 const Finder = require('./lib/finder')
 const filterSort = require('./lib/filterSort')
-const resolvePaths = require('./lib/resolvepaths')
+const resolvePaths = require('../../lib/resolvepaths')
 
 function search (pluginContext) {
   const { query } = pluginContext

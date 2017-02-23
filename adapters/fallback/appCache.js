@@ -2,7 +2,7 @@ const directories = require('../../directories')
 const Finder = require('./lib/finder')
 const fs = require('fs')
 const path = require('path')
-const resolvePaths = require('./lib/resolvepaths')
+const resolvePaths = require('../../lib/resolvepaths')
 
 function setup (pluginContext) {
   const { cwd } = pluginContext

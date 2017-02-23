@@ -3,17 +3,12 @@ const os = require('os')
 const path = require('path')
 const HOME_REGEX = new RegExp('^' + os.homedir())
 
-const appInfo = require('./appInfo')
-
 class File {
   constructor (name, dir, options = {}) {
     this.name = name
     this.path = path.join(dir, name)
     this.options = options
     this.stats = null
-    this.info = {}
-    this.iconPath = ''
-    this.loadInfo()
   }
 
   isViewable (exclude) {
@@ -50,37 +45,12 @@ class File {
     return !!(((mode >> 6) & 1) || (((mode << 3) >> 6) & 1) || (((mode << 6) >> 6) & 1))
   }
 
-  loadInfo () {
-    try {
-      if (this.isAppMac() && Object.keys(this.info).length === 0) {
-        this.info = appInfo.loadAppInfo(this.path)
-        this.iconPath = appInfo.getAppIconCachePath(this.path, this.name, this.options.cwd)
-        if (!fs.existsSync(this.iconPath)) {
-          const icnsPath = appInfo.getAppIcnsPath(this.path, this.info)
-          appInfo.generateIcon(icnsPath, this.iconPath)
-            .catch(err => console.trace(err))
-        }
-      }
-    } catch (err) {
-      console.trace(`Error when loading app info of ${this.name}: ${err}`)
-    }
-  }
-
   title () {
-    const fileName = this.name.split('.')[0]
-    if (this.isAppMac()) {
-      return this.info.CrAppModeShortcutName || this.info.CFBundleDisplayName || this.info.CFBundleName || fileName
-    } else {
-      return fileName
-    }
+    return this.name.split('.')[0]
   }
 
   icon () {
-    if (this.isAppMac()) {
-      return this.iconPath
-    } else {
-      return this.isDirectory() ? 'fa-folder' : 'fa-file'
-    }
+    return this.isDirectory() ? 'fa-folder' : 'fa-file'
   }
 
   isDirectory () {
