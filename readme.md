@@ -53,6 +53,12 @@ If you want to overwrite the directories you can.
           ],
           "appPath": [
             "/usr/games"
+          ],
+          "excludeName": [
+            "node_modules"
+          ],
+          "excludePath": [
+            "~/Library"
           ]
         }
       }

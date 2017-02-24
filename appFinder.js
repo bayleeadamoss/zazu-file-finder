@@ -1,24 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const filterSort = require('./lib/filterSort')
-const freshRequire = require('./lib/freshRequire')
+const adapter = require('./adapter')
 
-module.exports = (pluginContext) => {
-  const { cwd } = pluginContext
-  const appCachePath = path.join(cwd, 'data', 'applications.json')
-
+module.exports = ({ cwd }) => {
   return {
     respondsTo: (query) => {
       return query.match(/^[\w\-.\\/ ]+$/)
     },
     search: (query, env = {}) => {
-      if (!fs.existsSync(appCachePath)) {
-        return Promise.resolve([])
-      }
-      const applications = freshRequire(appCachePath)
-      return Promise.resolve(
-        filterSort(query, applications, (item) => item.title + item.subtitle)
-      )
+      return adapter(cwd, env).findApps(query)
     },
   }
 }

@@ -27,7 +27,6 @@ if (process.platform === 'win32') {
   if (process.env.APPDATA) {
     platform.win32.appPath.push(path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs'))
   }
-
   if (process.env.ProgramData) {
     platform.win32.appPath.push(path.join(process.env.ProgramData, 'Microsoft', 'Windows', 'Start Menu', 'Programs'))
   }

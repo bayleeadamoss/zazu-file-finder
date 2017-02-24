@@ -29,9 +29,11 @@
     "tape": "^4.6.0"
   },
   "dependencies": {
-    "mkdirp": "^0.5.1",
+    "app2png": "^1.0.0",
     "async": "^2.1.4",
+    "fuzzyfind": "^2.0.0",
     "iconutil": "^1.0.2",
+    "mkdirp": "^0.5.1",
     "simple-plist": "^0.2.1"
   }
 }
