@@ -135,7 +135,7 @@ class MDFind {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind('kind:app ' + query, options).then((files) => {
+    return mdfind(`(kind:app OR kind:pref) ${query}`, options).then((files) => {
       return fuzzyfind(query, files, {
         accessor: function (obj) {
           return obj.name + obj.path
@@ -151,7 +151,7 @@ class MDFind {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind('kind:app', options).then((files) => {
+    return mdfind('kind:app OR kind:pref', options).then((files) => {
       return files
         .filter((file) => !file.hasIcon())
         .slice(0, 20)
