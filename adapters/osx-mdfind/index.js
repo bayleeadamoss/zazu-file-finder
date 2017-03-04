@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const app2png = require('app2png')
 const fuzzyfind = require('fuzzyfind')
+const freshRequire = require('../../lib/freshRequire')
 const { spawn } = require('child_process')
 let currentWorkingDirectory = null
 
@@ -88,6 +89,8 @@ class MDFind {
     this.cwd = cwd
     this.env = env
     this.env.directories = this.env.directories || {}
+    this.appCachePath = path.join(cwd, 'data', 'applications.json')
+    this.hasCache = fs.existsSync(this.appCachePath)
     currentWorkingDirectory = cwd
   }
 
@@ -128,13 +131,23 @@ class MDFind {
     })
   }
 
-  findApps (query, env) {
+  findApps (query) {
+    if (this.hasCache) {
+      const cachedApps = freshRequire(this.appCachePath)
+      return Promise.resolve(
+        fuzzyfind(query, cachedApps, {
+          accessor: (obj) => {
+            return obj.title + obj.subtitle
+          },
+        }).slice(0, 20)
+      )
+    }
+
     const { appPath, excludeName, excludePath } = this.options()
     const options = {
       include: appPath,
       exclude: excludeName.concat(excludePath),
     }
-
     return mdfind(`(kind:app OR kind:pref) ${query}`, options).then((files) => {
       return fuzzyfind(query, files, {
         accessor: function (obj) {
@@ -144,6 +157,27 @@ class MDFind {
     })
   }
 
+  cacheApps (apps) {
+    const appCachePath = path.join(this.cwd, 'data', 'applications.json')
+    return new Promise((resolve, reject) => {
+      const fileJson = JSON.stringify(apps.map((file) => {
+        return file.toJson()
+      }))
+      fs.writeFile(appCachePath, fileJson, (err) => {
+        err ? reject(err) : resolve()
+      })
+    }).then(() => {
+      this.hasCache = true
+    })
+  }
+
+  cacheIcons (apps) {
+    return Promise.all(apps
+      .filter((file) => !file.hasIcon())
+      .slice(0, 20)
+      .map(file => file.generateIcon()))
+  }
+
   startCache () {
     const { appPath, excludeName, excludePath } = this.options()
     const options = {
@@ -151,11 +185,11 @@ class MDFind {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind('kind:app OR kind:pref', options).then((files) => {
-      return files
-        .filter((file) => !file.hasIcon())
-        .slice(0, 20)
-        .map(file => file.generateIcon())
+    return mdfind('kind:app OR kind:pref', options).then((apps) => {
+      return Promise.all([
+        this.cacheIcons(apps),
+        this.cacheApps(apps),
+      ])
     })
   }
 
