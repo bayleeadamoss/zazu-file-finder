@@ -1,7 +1,7 @@
 const { fork } = require('child_process')
 const fs = require('fs')
 const path = require('path')
-const freshRequire = require('./lib/freshRequire')
+const freshRequire = require('../../lib/freshRequire')
 const filterSort = require('./lib/filterSort')
 
 class Fallback {
