@@ -1,7 +1,11 @@
 const adapter = require('./adapter')
+const Cache = require('./lib/cache')
 
-module.exports = ({ cwd }) => {
+module.exports = (context) => {
+  const { cwd } = context
+  const cache = new Cache(cwd, 'applications')
   return (env = {}) => {
-    return adapter(cwd, env).startCache()
+    return adapter(context, env).startCache()
+      .then(results => cache.update(results))
   }
 }

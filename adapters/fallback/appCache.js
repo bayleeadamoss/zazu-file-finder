@@ -1,14 +1,9 @@
 const directories = require('../../directories')
 const Finder = require('./lib/finder')
-const fs = require('fs')
-const path = require('path')
 const resolvePaths = require('../../lib/resolvepaths')
 
 function setup (pluginContext) {
-  const { cwd } = pluginContext
-  const { extra } = pluginContext
-  const { append } = pluginContext
-  const appPath = path.join(cwd, 'data', 'applications.json')
+  const { cwd, extra, append } = pluginContext
 
   if (append) {
     directories.appPath = directories.appPath.concat(extra.appPath || [])
@@ -28,20 +23,16 @@ function setup (pluginContext) {
   })
 
   return function run () {
-    return finder.deepFind().then((files) => {
-      return files.filter((file) => {
-        return !file.isDirectory() && file.isApp()
+    return finder.deepFind()
+      .then(files => files.filter(file => !file.isDirectory() && file.isApp()))
+      .then(matchedFiles => matchedFiles.map(file => file.toJson()))
+      .then(files => {
+        if (process.send) {
+          process.send(files)
+        } else {
+          console.log(`Found ${files.length} files, and cannot send back because it's not in fork()`)
+        }
       })
-    }).then((matchedFiles) => {
-      const fileJson = JSON.stringify(matchedFiles.map((file) => {
-        return file.toJson()
-      }))
-      return new Promise((resolve, reject) => {
-        fs.writeFile(appPath, fileJson, (err) => {
-          err ? reject(err) : resolve()
-        })
-      })
-    })
   }
 }
 

@@ -1,7 +1,7 @@
 const adapter = require('./adapter')
 
-module.exports = ({ cwd }) => {
+module.exports = (context) => {
   return (query, env = {}) => {
-    return adapter(cwd, env).findFiles(query)
+    return adapter(context, env).findFiles(query)
   }
 }

@@ -66,3 +66,19 @@ If you want to overwrite the directories you can.
   ]
 }
 ~~~
+
+## Development
+
+### Testing
+
+Run tests in current system environment:
+
+```bash
+npm run test
+```
+
+Run tests in Docker, which is helpful for running tests in Linux environment when using other platform such as macOS or Windows.
+
+```bash
+npm run docker-test
+```

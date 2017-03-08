@@ -1,9 +1,9 @@
-const fs = require('fs')
-const path = require('path')
 const app2png = require('app2png')
-const fuzzyfind = require('fuzzyfind')
-const freshRequire = require('../../lib/freshRequire')
 const { spawn } = require('child_process')
+const fs = require('fs')
+const fuzzyfind = require('fuzzyfind')
+const path = require('path')
+
 let currentWorkingDirectory = null
 
 class File {
@@ -85,13 +85,12 @@ const mdfind = (term, options) => {
 }
 
 class MDFind {
-  constructor (cwd, env) {
-    this.cwd = cwd
+  constructor (context, env = {}) {
+    this.cwd = context.cwd
     this.env = env
+    this.console = context.console || console
     this.env.directories = this.env.directories || {}
-    this.appCachePath = path.join(cwd, 'data', 'applications.json')
-    this.hasCache = fs.existsSync(this.appCachePath)
-    currentWorkingDirectory = cwd
+    currentWorkingDirectory = context.cwd
   }
 
   options () {
@@ -132,17 +131,6 @@ class MDFind {
   }
 
   findApps (query) {
-    if (this.hasCache) {
-      const cachedApps = freshRequire(this.appCachePath)
-      return Promise.resolve(
-        fuzzyfind(query, cachedApps, {
-          accessor: (obj) => {
-            return obj.title + obj.subtitle
-          },
-        }).slice(0, 20)
-      )
-    }
-
     const { appPath, excludeName, excludePath } = this.options()
     const options = {
       include: appPath,
@@ -154,20 +142,6 @@ class MDFind {
           return obj.name + obj.path
         },
       }).slice(0, 20).map(file => file.toJson())
-    })
-  }
-
-  cacheApps (apps) {
-    const appCachePath = path.join(this.cwd, 'data', 'applications.json')
-    return new Promise((resolve, reject) => {
-      const fileJson = JSON.stringify(apps.map((file) => {
-        return file.toJson()
-      }))
-      fs.writeFile(appCachePath, fileJson, (err) => {
-        err ? reject(err) : resolve()
-      })
-    }).then(() => {
-      this.hasCache = true
     })
   }
 
@@ -185,12 +159,8 @@ class MDFind {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind('kind:app OR kind:pref', options).then((apps) => {
-      return Promise.all([
-        this.cacheIcons(apps),
-        this.cacheApps(apps),
-      ])
-    })
+    return mdfind('kind:app OR kind:pref', options)
+      .then((apps) => this.cacheIcons(apps).then(() => apps.map(app => app.toJson())))
   }
 
   static isInstalled () {

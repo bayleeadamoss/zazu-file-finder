@@ -46,7 +46,7 @@ class File {
   }
 
   title () {
-    return this.name.split('.')[0]
+    return (this.isAppMac() || this.isAppWindows()) ? path.parse(this.name).name : this.name
   }
 
   icon () {

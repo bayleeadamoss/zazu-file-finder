@@ -15,7 +15,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "node test"
+    "docker-build": "docker build -t zazu-file-finder .",
+    "docker-test": "npm run docker-build && docker run zazu-file-finder",
+    "test": "node test | tap-spec"
   },
   "author": "Tiny Taco Team",
   "license": "MIT",
@@ -26,6 +28,7 @@
     "eslint-plugin-standard": "^2.0.1",
     "proxyquire": "^1.7.10",
     "rewire": "^2.5.2",
+    "tap-spec": "^4.1.1",
     "tape": "^4.6.0"
   },
   "dependencies": {

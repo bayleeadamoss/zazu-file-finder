@@ -1,18 +1,14 @@
 const { fork } = require('child_process')
 const fs = require('fs')
 const path = require('path')
-const freshRequire = require('../../lib/freshRequire')
-const filterSort = require('./lib/filterSort')
 
 class Fallback {
-  constructor (cwd, env) {
+  constructor (context, env = {}) {
     this.env = env
-    this.cwd = cwd
+    this.cwd = context.cwd
     this.runner = null
-    this.fileFinderPath = path.join(cwd, 'adapters', 'fallback', 'fileFinder.js')
-    this.appCacheProcess = path.join(cwd, 'adapters', 'fallback', 'appCache.js')
-    this.appCachePath = path.join(cwd, 'adapters', 'fallback', 'data', 'applications.json')
-    this.hasCache = fs.existsSync(this.appCachePath)
+    this.fileFinderPath = path.join(__dirname, 'fileFinder.js')
+    this.appCacheProcess = path.join(__dirname, 'appCache.js')
   }
 
   findFiles (query) {
@@ -36,19 +32,14 @@ class Fallback {
   }
 
   findApps (query) {
-    if (!this.hasCache) {
-      return Promise.resolve([])
-    }
-    const applications = freshRequire(this.appCachePath)
-    return Promise.resolve(
-      filterSort(query, applications, (item) => item.title + item.subtitle)
-    )
+    return Promise.resolve([])
   }
 
   startCache () {
     const args = [this.cwd, JSON.stringify(this.env)]
     const runner = fork(this.appCacheProcess, args)
     return new Promise((resolve) => {
+      runner.on('message', (data) => resolve(data))
       runner.on('exit', () => {
         this.hasCache = fs.existsSync(this.appCachePath)
         resolve()

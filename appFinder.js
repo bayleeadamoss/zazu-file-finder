@@ -1,12 +1,18 @@
 const adapter = require('./adapter')
+const Cache = require('./lib/cache')
 
-module.exports = ({ cwd }) => {
+module.exports = (context) => {
   return {
     respondsTo: (query) => {
       return query.match(/^[\w\-.\\/ ]+$/)
     },
     search: (query, env = {}) => {
-      return adapter(cwd, env).findApps(query)
+      const { cwd, console } = context
+      const cache = new Cache(cwd, 'applications')
+
+      return cache.search(query)
+        .then(results => results.length > 0 ? results : adapter(context, env).findApps(query))
+        .catch(error => console.log('error', error))
     },
   }
 }
