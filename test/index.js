@@ -1,2 +1,3 @@
-require('./fallback/appFinder.spec')
-require('./fallback/fileFinder.spec')
+require('./main.spec')
+require('./lib')
+require('./adapters')

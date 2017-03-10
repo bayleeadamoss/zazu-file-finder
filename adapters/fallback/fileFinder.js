@@ -1,6 +1,6 @@
+const fuzzyfind = require('fuzzyfind')
 const directories = require('../../directories')
 const Finder = require('./lib/finder')
-const filterSort = require('./lib/filterSort')
 const resolvePaths = require('../../lib/resolvepaths')
 
 function search (pluginContext) {
@@ -25,18 +25,20 @@ function search (pluginContext) {
   })
 
   function findBy (query) {
-    return finder.deepFind().then((files) => {
-      return filterSort(query, files, (file) => file.name)
-    }).then((matchedFiles) => {
-      return matchedFiles.map((file) => {
-        return file.toJson()
-      })
-    })
+    return finder.deepFind()
+    .then((files) => fuzzyfind(query, files, { accessor: file => file.name }))
+    .then((matchedFiles) => matchedFiles.map((file) => file.toJson()))
   }
 
-  findBy(query).then((matchedResults) => {
-    process.send(matchedResults)
-  })
+  findBy(query)
+    .then((matchedResults) => {
+      if (process.send) {
+        process.send(matchedResults)
+      } else {
+        console.log(`Found results ${JSON.stringify(matchedResults)}`)
+      }
+    })
+    .catch(console.error)
 }
 
 (() => {
