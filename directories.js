@@ -19,7 +19,7 @@ platform.win32 = {
   ],
 }
 
-if (process.platform === 'win32') {
+if (os.platform() === 'win32') {
   if (process.env.USERPROFILE) {
     platform.win32.appPath.push(path.join(process.env.USERPROFILE, 'Desktop'))
   }
@@ -81,4 +81,4 @@ platform.linux = {
 }
 
 // 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
-module.exports = platform[process.platform] || platform.linux
+module.exports = platform[os.platform()] || platform.linux

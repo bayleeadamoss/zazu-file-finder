@@ -1,14 +1,14 @@
 const { fork } = require('child_process')
-const fs = require('fs')
 const path = require('path')
+const Adapter = require('../../lib/adapter')
 
-class Fallback {
+const fileFinderPath = path.join(__dirname, 'fileFinder.js')
+const appCacheProcess = path.join(__dirname, 'appCache.js')
+
+class Fallback extends Adapter {
   constructor (context, env = {}) {
-    this.env = env
-    this.cwd = context.cwd
+    super(context, env)
     this.runner = null
-    this.fileFinderPath = path.join(__dirname, 'fileFinder.js')
-    this.appCacheProcess = path.join(__dirname, 'appCache.js')
   }
 
   findFiles (query) {
@@ -17,7 +17,7 @@ class Fallback {
     }
 
     const args = [this.cwd, query, JSON.stringify(this.env)]
-    this.runner = fork(this.fileFinderPath, args, {
+    this.runner = fork(fileFinderPath, args, {
       cwd: this.cwd,
       stdio: 'pipe',
     })
@@ -31,19 +31,11 @@ class Fallback {
     })
   }
 
-  findApps (query) {
-    return Promise.resolve([])
-  }
-
   startCache () {
     const args = [this.cwd, JSON.stringify(this.env)]
-    const runner = fork(this.appCacheProcess, args)
+    const runner = fork(appCacheProcess, args)
     return new Promise((resolve) => {
       runner.on('message', (data) => resolve(data))
-      runner.on('exit', () => {
-        this.hasCache = fs.existsSync(this.appCachePath)
-        resolve()
-      })
     })
   }
 }
