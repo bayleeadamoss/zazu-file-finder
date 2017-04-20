@@ -14,18 +14,22 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "eslint .",
     "docker-build": "docker build -t zazu-file-finder .",
     "docker-test": "npm run docker-build && docker run zazu-file-finder",
-    "test": "node test | tap-spec"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "report": "nyc report --reporter=lcov && echo open 'coverage/lcov-report/index.html'",
+    "lint": "eslint .",
+    "test": "nyc tape test | tap-spec"
   },
   "author": "Tiny Taco Team",
   "license": "MIT",
   "devDependencies": {
+    "coveralls": "^2.12.0",
     "eslint": "^3.13.1",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
+    "nyc": "^10.1.2",
     "proxyquire": "^1.7.10",
     "rewire": "^2.5.2",
     "tap-spec": "^4.1.1",

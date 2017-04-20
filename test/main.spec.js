@@ -3,6 +3,7 @@ const fs = require('fs')
 const mkdirp = require('mkdirp')
 const os = require('os')
 const path = require('path')
+const proxyquire = require('proxyquire')
 const adapter = require('../adapter')
 const appCache = require('../appCache')
 const appFinder = require('../appFinder')
@@ -88,4 +89,39 @@ describe('appFinder: should be able search "data/applications.json" file', (asse
       console.error(error)
       assert.fail(error)
     })
+})
+
+describe('directories: should have default directories for macOS', (assert) => {
+  const stubOS = {
+    homedir: () => os.homedir(),
+    platform: () => 'darwin',
+  }
+  const directories = proxyquire('../directories', { 'os': stubOS })
+  assert.true(directories.appPath.length > 0, 'Should contains 1 or more directories for appPath')
+  assert.true(directories.filePath.length > 0, 'Should contains 1 or more directories for filePath')
+  assert.end()
+})
+
+describe('directories: should have default directories for Linux', (assert) => {
+  const stubOS = {
+    homedir: () => os.homedir(),
+    platform: () => 'linux',
+  }
+  const directories = proxyquire('../directories', { 'os': stubOS })
+  assert.true(directories.appPath.length > 0, 'Should contains 1 or more directories for appPath')
+  assert.true(directories.filePath.length > 0, 'Should contains 1 or more directories for filePath')
+  assert.end()
+})
+
+describe('directories: should have default directories for Windows', (assert) => {
+  const stubOS = {
+    homedir: () => os.homedir(),
+    platform: () => 'win32',
+  }
+  const directories = proxyquire('../directories', { 'os': stubOS })
+  if (os.platform() === 'win32') {
+    assert.true(directories.appPath.length > 0, 'Should contains 1 or more directories for appPath')
+  }
+  assert.true(directories.filePath.length > 0, 'Should contains 1 or more directories for filePath')
+  assert.end()
 })

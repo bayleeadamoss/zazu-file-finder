@@ -1,5 +1,6 @@
 const fs = require('fs')
-const File = require('./file')
+const path = require('path')
+const File = require('../../lib/file')
 
 class Finder {
   constructor (options) {
@@ -8,7 +9,7 @@ class Finder {
 
   findIn (searchPath) {
     return new Promise((resolve, reject) => {
-      const file = new File(searchPath, '', this.options)
+      const file = new File(searchPath)
       file.getStats().then(() => {
         if (file.isBroken()) return resolve([])
         fs.readdir(searchPath, (err, fileNames) => {
@@ -20,7 +21,7 @@ class Finder {
       return fileNames.filter((file) => {
         return this.options.excludeName.indexOf(file) === -1
       }).map((fileName) => {
-        return new File(fileName, searchPath, this.options)
+        return new File(path.join(searchPath, fileName))
       }).filter((fileModel) => {
         return fileModel.isViewable(this.options.excludePath)
       })

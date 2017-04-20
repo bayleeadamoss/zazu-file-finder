@@ -1,122 +1,12 @@
-const app2png = require('app2png')
-const { spawn } = require('child_process')
-const fs = require('fs')
 const fuzzyfind = require('fuzzyfind')
-const path = require('path')
+const Adapter = require('../../lib/adapter')
+const mdfind = require('./mdfind')
 
-let currentWorkingDirectory = null
-
-class File {
-  constructor (filePath, fileName) {
-    this.path = filePath
-    this.name = fileName
-    this.iconPath = path.join(
-      currentWorkingDirectory,
-      `./data/icons/${path.basename(this.path)}.png`
-    )
-  }
-
-  isApp () {
-    return this.path.match(/\.app$/)
-  }
-
-  icon () {
-    return this.hasIcon() ? this.iconPath : 'fa-file'
-  }
-
-  generateIcon () {
-    if (this.hasIcon()) return Promise.resolve()
-    return app2png.convert(this.path, this.iconPath)
-  }
-
-  hasIcon () {
-    return fs.existsSync(this.iconPath)
-  }
-
-  toJson () {
-    return {
-      id: this.path,
-      icon: this.icon(),
-      title: this.name,
-      subtitle: this.path,
-      value: this.path,
-    }
-  }
-}
-
-const mdfind = (term, options) => {
-  return new Promise((resolve, reject) => {
-    const params = options.include.reduce((memo, dir) => {
-      memo.unshift('-onlyin', dir)
-      return memo
-    }, ['-attr', 'kMDItemDisplayName', term])
-
-    const res = spawn('mdfind', params)
-    const data = []
-    const err = []
-
-    res.stdout.on('data', (piece) => {
-      data.push(piece.toString())
-    })
-
-    res.stderr.on('data', (err) => {
-      err.push(err.toString())
-    })
-
-    res.on('close', (code) => {
-      if (code === 0) {
-        const files = data.join('').split('\n')
-          .filter(Boolean)
-          .filter((file) => {
-            const badPieces = file.split('/').filter((piece) => {
-              return options.exclude.includes(piece)
-            })
-            return badPieces.length === 0
-          })
-          .map((file) => {
-            const res = file.match(/(.*) {3}kMDItemDisplayName = (.*)/)
-            return new File(res[1], res[2])
-          })
-        return resolve(files)
-      }
-      reject(err.join('').trim())
-    })
-  })
-}
-
-class MDFind {
-  constructor (context, env = {}) {
-    this.cwd = context.cwd
-    this.env = env
-    this.console = context.console || console
-    this.env.directories = this.env.directories || {}
-    currentWorkingDirectory = context.cwd
-  }
-
-  options () {
-    if (!this.directories) {
-      const append = this.env.append
-      const { appPath, filePath, excludePath, excludeName } = this.env.directories
-      const directories = require('../../directories')
-      if (append) {
-        directories.appPath = directories.appPath.concat(appPath || [])
-        directories.filePath = directories.filePath.concat(filePath || [])
-        directories.excludePath = directories.excludePath.concat(excludePath || []) // !! not used yet
-        directories.excludeName = directories.excludeName.concat(excludeName || [])
-      } else {
-        directories.appPath = appPath || directories.appPath
-        directories.filePath = filePath || directories.filePath
-        directories.excludePath = excludePath || directories.excludePath // !! not used yet
-        directories.excludeName = excludeName || directories.excludeName
-      }
-      this.directories = directories
-    }
-    return this.directories
-  }
-
+class MDFind extends Adapter {
   findFiles (query) {
-    const { filePath, excludeName, excludePath } = this.options()
+    const { filePath, excludeName, excludePath } = this.env.directories
     const options = {
+      cwd: this.cwd,
       include: filePath,
       exclude: excludeName.concat(excludePath),
     }
@@ -131,8 +21,9 @@ class MDFind {
   }
 
   findApps (query) {
-    const { appPath, excludeName, excludePath } = this.options()
+    const { appPath, excludeName, excludePath } = this.env.directories
     const options = {
+      cwd: this.cwd,
       include: appPath,
       exclude: excludeName.concat(excludePath),
     }
@@ -150,17 +41,20 @@ class MDFind {
       .filter((file) => !file.hasIcon())
       .slice(0, 20)
       .map(file => file.generateIcon()))
+      .then(() => apps)
   }
 
   startCache () {
-    const { appPath, excludeName, excludePath } = this.options()
+    const { appPath, excludeName, excludePath } = this.env.directories
     const options = {
+      cwd: this.cwd,
       include: appPath,
       exclude: excludeName.concat(excludePath),
     }
 
     return mdfind('kind:app OR kind:pref', options)
-      .then((apps) => this.cacheIcons(apps).then(() => apps.map(app => app.toJson())))
+      .then(apps => this.cacheIcons(apps))
+      .then(apps => apps.map(app => app.toJson()))
   }
 
   static isInstalled () {

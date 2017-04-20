@@ -7,7 +7,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Mandarin App</string>
 	<key>CFBundleExecutable</key>
-	<string>text</string>
+	<string>daisy</string>
 	<key>CFBundleIconFile</key>
 	<string>icon</string>
 	<key>CFBundleIdentifier</key>
