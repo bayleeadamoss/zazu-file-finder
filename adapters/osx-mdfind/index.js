@@ -2,6 +2,8 @@ const fuzzyfind = require('fuzzyfind')
 const Adapter = require('../../lib/adapter')
 const mdfind = require('./mdfind')
 
+const appQuery = '(kMDItemContentType=com.apple.application-* || kMDItemContentType=com.apple.systempreference.prefpane)'
+
 class MDFind extends Adapter {
   findFiles (query) {
     const { filePath, excludeName, excludePath } = this.env.directories
@@ -27,7 +29,7 @@ class MDFind extends Adapter {
       include: appPath,
       exclude: excludeName.concat(excludePath),
     }
-    return mdfind(`(kind:app OR kind:pref) ${query}`, options).then((files) => {
+    return mdfind(appQuery, options).then((files) => {
       return fuzzyfind(query, files, {
         accessor: function (obj) {
           return obj.name + obj.path
@@ -52,7 +54,7 @@ class MDFind extends Adapter {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind('kind:app OR kind:pref', options)
+    return mdfind(appQuery, options)
       .then(apps => this.cacheIcons(apps))
       .then(apps => apps.map(app => app.toJson()))
   }
