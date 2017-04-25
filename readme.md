@@ -71,6 +71,9 @@ If you want to overwrite the directories you can.
 
 ### Testing
 
+WARNING: If you are on MacOS, you cannot test this plugin where Zazu installs
+it, since `~/.zazu` as a hidden folder is ignored.
+
 Run tests in current system environment:
 
 ```bash

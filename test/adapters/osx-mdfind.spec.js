@@ -45,12 +45,12 @@ if (process.platform === 'darwin') {
         return adapter.findApps('apple')
       })
       .then(apps => {
-        assert.true(apps && apps.length === 1, 'findApps("apple") should be able to return result')
+        assert.true(apps && apps.length >= 1, 'findApps("apple") should be able to return result')
         assert.equal(apps[0].title, 'Text Apple', 'findApps("apple") should return "Text Apple" app')
         return adapter.findApps('orange')
       })
       .then(apps => {
-        assert.true(apps && apps.length === 1, 'findApps("orange") should be able to return the result')
+        assert.true(apps && apps.length >= 1, 'findApps("orange") should be able to return the result')
         assert.equal(apps[0].title, 'Binary Orange', 'findApps("orange") should return "Binary Orange" app')
         assert.end()
       })
