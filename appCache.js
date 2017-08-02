@@ -9,3 +9,10 @@ module.exports = (context) => {
       .then(results => cache.update(results))
   }
 }
+
+module.exports({
+  cwd: process.cwd(),
+  console,
+})().then((results) => {
+  console.log('app length', results.length)
+})

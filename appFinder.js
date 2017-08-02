@@ -16,3 +16,10 @@ module.exports = (context) => {
     },
   }
 }
+
+module.exports({
+  cwd: process.cwd(),
+  console,
+}).search('vox').then((results) => {
+  console.log(results)
+})

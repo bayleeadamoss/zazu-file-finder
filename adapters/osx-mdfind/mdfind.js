@@ -9,6 +9,8 @@ const mdfind = (term, options) => {
       return memo
     }, ['-attr', 'kMDItemDisplayName', term])
 
+    console.log(params)
+
     const res = spawn('mdfind', params)
     const data = []
     const err = []
