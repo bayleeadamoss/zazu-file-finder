@@ -19,6 +19,8 @@ describe('lib/file: constructor', (assert) => {
   assert.equal(new FileMac('/a/b/c.app').name, 'c', '.name should strip the file extension if it is mac app')
   assert.equal(new FileMac('/a/b/c.prefPane').name, 'c', '.name should strip the file extension if it is mac prefPane')
   assert.equal(new FileWin('Notepad.lnk').name, 'Notepad', '.name should strip the file extension if it is win .lnk')
+  assert.equal(new FileWin('Notepad.exe').name, 'Notepad', '.name should strip the file extension if it is win .exe')
+  assert.equal(new FileWin('Photos.appref-ms').name, 'Photos', '.name should strip the file extension if it is win .appref-ms')
   assert.end()
 })
 
