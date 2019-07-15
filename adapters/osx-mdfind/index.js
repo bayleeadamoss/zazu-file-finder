@@ -15,8 +15,8 @@ class MDFind extends Adapter {
     }
 
     return mdfind(query, options).then(files => {
-      return (this.env.matchBy === 'stringcontain'
-        ? files.map(obj => (obj.name + obj.path).contains(query))
+      return (this.env.matchBy === 'stringincludes'
+        ? files.filter(obj => (obj.name + obj.path).toLowerCase().includes(query.toLowerCase()))
         : fuzzyfind(query, files, {
           accessor: function (obj) {
             return obj.name + obj.path
@@ -36,8 +36,8 @@ class MDFind extends Adapter {
       exclude: excludeName.concat(excludePath),
     }
     return mdfind(appQuery, options).then(files => {
-      return (this.env.matchBy === 'stringcontain'
-        ? files.map(obj => (obj.name + obj.path).contains(query))
+      return (this.env.matchBy === 'stringincludes'
+        ? files.filter(obj => (obj.name + obj.path).toLowerCase().includes(query.toLowerCase()))
         : fuzzyfind(query, files, {
           accessor: function (obj) {
             return obj.name + obj.path

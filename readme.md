@@ -77,7 +77,7 @@ If you want to change the matching algorithm you can:
     {
       "name": "tinytacoteam/zazu-file-finder",
       "variables": {
-        "matchBy": "stringcontain" // "fuzzyfind" by default
+        "matchBy": "stringincludes" // "fuzzyfind" by default
       }
     }
   ]
