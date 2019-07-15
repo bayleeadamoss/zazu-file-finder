@@ -6,7 +6,7 @@ const appQuery =
   '(kMDItemContentType=com.apple.application-* || kMDItemContentType=com.apple.systempreference.prefpane)'
 
 class MDFind extends Adapter {
-  findFiles (query, env = {}) {
+  findFiles (query) {
     const { filePath, excludeName, excludePath } = this.env.directories
     const options = {
       cwd: this.cwd,
@@ -15,19 +15,20 @@ class MDFind extends Adapter {
     }
 
     return mdfind(query, options).then(files => {
-      return env.matchBy === 'stringcontain'
+      return (this.env.matchBy === 'stringcontain'
         ? files.map(obj => (obj.name + obj.path).contains(query))
         : fuzzyfind(query, files, {
           accessor: function (obj) {
             return obj.name + obj.path
           },
         })
-            .slice(0, 20)
-            .map(file => file.toJson())
+      )
+        .slice(0, 20)
+        .map(file => file.toJson())
     })
   }
 
-  findApps (query, env) {
+  findApps (query) {
     const { appPath, excludeName, excludePath } = this.env.directories
     const options = {
       cwd: this.cwd,
@@ -35,15 +36,16 @@ class MDFind extends Adapter {
       exclude: excludeName.concat(excludePath),
     }
     return mdfind(appQuery, options).then(files => {
-      return env.matchBy === 'stringcontain'
+      return (this.env.matchBy === 'stringcontain'
         ? files.map(obj => (obj.name + obj.path).contains(query))
         : fuzzyfind(query, files, {
           accessor: function (obj) {
             return obj.name + obj.path
           },
         })
-            .slice(0, 20)
-            .map(file => file.toJson())
+      )
+        .slice(0, 20)
+        .map(file => file.toJson())
     })
   }
 

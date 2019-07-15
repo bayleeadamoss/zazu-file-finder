@@ -74,11 +74,10 @@ If you want to change the matching algorithm you can:
 ```json
 {
   "plugins": [
-    "tinytacoteam/zazu-file-finder",
     {
       "name": "tinytacoteam/zazu-file-finder",
       "variables": {
-        "matchBy": "stringcontain", // "fuzzyfind" by default
+        "matchBy": "stringcontain" // "fuzzyfind" by default
       }
     }
   ]

@@ -12,14 +12,10 @@ function search (pluginContext) {
     excludeName: resolvePaths(directories.excludeName || []),
   })
 
-  function findBy (query, env = {}) {
+  function findBy (query) {
     return finder
       .deepFind()
-      .then(files =>
-        env.matchBy === 'stringcontain'
-          ? files.map(file => file.name.contains(query))
-          : fuzzyfind(query, files, { accessor: file => file.name })
-      )
+      .then(files => fuzzyfind(query, files, { accessor: file => file.name }))
       .then(matchedFiles => matchedFiles.map(file => file.toJson()))
   }
 
