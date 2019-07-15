@@ -2,7 +2,8 @@ const fuzzyfind = require('fuzzyfind')
 const Adapter = require('../../lib/adapter')
 const mdfind = require('./mdfind')
 
-const appQuery = '(kMDItemContentType=com.apple.application-* || kMDItemContentType=com.apple.systempreference.prefpane)'
+const appQuery =
+  '(kMDItemContentType=com.apple.application-* || kMDItemContentType=com.apple.systempreference.prefpane)'
 
 class MDFind extends Adapter {
   findFiles (query) {
@@ -13,12 +14,17 @@ class MDFind extends Adapter {
       exclude: excludeName.concat(excludePath),
     }
 
-    return mdfind(query, options).then((files) => {
-      return fuzzyfind(query, files, {
-        accessor: function (obj) {
-          return obj.name + obj.path
-        },
-      }).slice(0, 20).map(file => file.toJson())
+    return mdfind(query, options).then(files => {
+      return (this.env.matchBy === 'stringincludes'
+        ? files.filter(obj => (obj.name + obj.path).toLowerCase().includes(query.toLowerCase()))
+        : fuzzyfind(query, files, {
+          accessor: function (obj) {
+            return obj.name + obj.path
+          },
+        })
+      )
+        .slice(0, 20)
+        .map(file => file.toJson())
     })
   }
 
@@ -29,21 +35,27 @@ class MDFind extends Adapter {
       include: appPath,
       exclude: excludeName.concat(excludePath),
     }
-    return mdfind(appQuery, options).then((files) => {
-      return fuzzyfind(query, files, {
-        accessor: function (obj) {
-          return obj.name + obj.path
-        },
-      }).slice(0, 20).map(file => file.toJson())
+    return mdfind(appQuery, options).then(files => {
+      return (this.env.matchBy === 'stringincludes'
+        ? files.filter(obj => (obj.name + obj.path).toLowerCase().includes(query.toLowerCase()))
+        : fuzzyfind(query, files, {
+          accessor: function (obj) {
+            return obj.name + obj.path
+          },
+        })
+      )
+        .slice(0, 20)
+        .map(file => file.toJson())
     })
   }
 
   cacheIcons (apps) {
-    return Promise.all(apps
-      .filter((file) => !file.hasIcon())
-      .slice(0, 20)
-      .map(file => file.generateIcon()))
-      .then(() => apps)
+    return Promise.all(
+      apps
+        .filter(file => !file.hasIcon())
+        .slice(0, 20)
+        .map(file => file.generateIcon())
+    ).then(() => apps)
   }
 
   startCache () {

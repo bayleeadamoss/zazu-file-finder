@@ -31,6 +31,8 @@ Add `tinytacoteam/zazu-file-finder` inside of `plugins` block of your  `~/.zazur
 }
 ~~~
 
+## Config
+
 If you want to overwrite the directories you can.
 
   * `append` if you want to keep the original, and just add additonal
@@ -66,6 +68,21 @@ If you want to overwrite the directories you can.
   ]
 }
 ~~~
+
+If you want to change the matching algorithm you can:
+
+```json
+{
+  "plugins": [
+    {
+      "name": "tinytacoteam/zazu-file-finder",
+      "variables": {
+        "matchBy": "stringincludes" // "fuzzyfind" by default
+      }
+    }
+  ]
+}
+```
 
 ## Development
 

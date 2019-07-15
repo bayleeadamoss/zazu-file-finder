@@ -13,13 +13,14 @@ function search (pluginContext) {
   })
 
   function findBy (query) {
-    return finder.deepFind()
+    return finder
+      .deepFind()
       .then(files => fuzzyfind(query, files, { accessor: file => file.name }))
       .then(matchedFiles => matchedFiles.map(file => file.toJson()))
   }
 
   findBy(query)
-    .then((matchedResults) => {
+    .then(matchedResults => {
       if (process.send) {
         process.send(matchedResults)
       } else {
@@ -29,7 +30,7 @@ function search (pluginContext) {
     .catch(console.error)
 }
 
-(() => {
+;(() => {
   const cwd = __dirname
   const query = process.argv.slice(-2)[0]
   const options = process.argv.slice(-1)[0] ? JSON.parse(process.argv.slice(-1)[0]) : {}
