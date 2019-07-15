@@ -1,6 +1,6 @@
 {
   "name": "zazu-file-finder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A file finder for Zazu.",
   "main": "appCache.js",
   "keywords": [
