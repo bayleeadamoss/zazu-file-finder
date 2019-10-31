@@ -12,21 +12,18 @@ const collection = [
     title: 'Docker Quickstart Terminal',
     subtitle: '/Applications/Utility/Docker Quickstart Terminal.app',
     value: '/Applications/Utility/Docker Quickstart Terminal.app',
-    id: '/Applications/Utility/Docker Quickstart Terminal.app',
   },
   {
     icon: 'fa-file',
     title: 'Some-magic.file-with-chars',
     subtitle: '/Applications/Utility/Some-magic-file.with-chars',
     value: '/Applications/Utility/Some-magic.file-with-chars',
-    id: '/Applications/Utility/Some-magic.file-with-chars',
   },
   {
     icon: 'fa-file',
     title: 'Terminal',
     subtitle: '/Applications/Utility/Terminal.app',
     value: '/Applications/Utility/Terminal.app',
-    id: '/Applications/Utility/Terminal.app',
   },
 ]
 
